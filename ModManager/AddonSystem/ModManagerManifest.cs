@@ -15,15 +15,26 @@ namespace ModManager.AddonSystem
         public ModManagerManifest(string installLocation, Mod mod, File file)
         {
             RootPath = installLocation;
-            FileId = file.Id;
+            // FileId = file.Id;
             ResourceId = mod.Id;
             Version = file.Version!;
+        }
+        
+        public ModManagerManifest(
+            string installLocation, 
+            Mod mod, 
+            string version)
+        {
+            RootPath = installLocation;
+            // FileId = file.Id;
+            ResourceId = mod.Id;
+            Version = version;
         }
 
         [JsonIgnore]
         public string RootPath { get; set; } = null!;
 
-        public uint FileId { get; set; }
+        // public uint FileId { get; set; }
         
         public uint ResourceId { get; set; }
         

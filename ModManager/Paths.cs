@@ -13,9 +13,7 @@ namespace ModManager
             Mods = startupOptions.ModInstallationPath;
 
             EnsurePathExists(Mods);
-            EnsurePathExists(ModManager.Data);
             EnsurePathExists(ModManager.Temp);
-            EnsurePathExists(ModManager.User);
         }
 
         private static void EnsurePathExists(string path)
@@ -36,11 +34,7 @@ namespace ModManager
 
         public static class ModManager
         {
-            public static string Data { get; set; } = Path.Combine(ModManagerRoot, "data");
-
-            public static string User { get; set; } = Path.Combine(ModManagerRoot, "user");
-
-            public static string Temp { get; set; } = Path.Combine(ModManagerRoot, "temp");
+            public static string Temp { get; set; } = Path.GetTempPath();
         }
     }
 }

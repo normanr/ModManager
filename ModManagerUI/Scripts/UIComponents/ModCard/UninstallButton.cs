@@ -1,0 +1,50 @@
+﻿using Modio.Models;
+using ModManager.ModIoSystem;
+using UnityEngine.UIElements;
+
+namespace ModManagerUI.UIComponents.ModCard
+{
+    public class UninstallButton
+    {
+        private readonly Button _root;
+        private readonly Mod _mod;
+        
+        public UninstallButton(Button root, Mod mod)
+        {
+            _root = root;
+            _mod = mod;
+        }
+
+        public void Initialize()
+        {
+            _root.clicked += () => InstallController.Uninstall(_mod);
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            _root.visible = IsVisible();
+            _root.SetEnabled(IsEnabled());
+        }
+
+        private bool IsVisible()
+        {
+            if (ModHelper.IsModManager(_mod))
+            {
+                return true;
+            }
+            
+            return _mod.IsInstalled();
+        }
+
+        private bool IsEnabled()
+        {
+            if (ModHelper.IsModManager(_mod))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

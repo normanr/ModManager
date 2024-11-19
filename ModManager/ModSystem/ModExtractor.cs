@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using ModManager.AddonSystem;
 using File = System.IO.File;
 
 namespace ModManager.ModSystem
@@ -19,9 +20,11 @@ namespace ModManager.ModSystem
             if (!modInfo.Tags.Any(x => x.Name == "Mod"))
                 return false;
 
-            var modFolderName = $"{modInfo.NameId}_{modInfo.Id}";
+            var modFolderName = $"{modInfo.NameId}_{modInfo.Id}_{modInfo.Modfile?.Version}";
             ClearOldModFiles(modInfo, modFolderName);
             extractLocation = Path.Combine(Paths.Mods, modFolderName);
+            if (!Directory.Exists(extractLocation)) 
+                Directory.CreateDirectory(extractLocation);
             ExtractContent(addonZipLocation, extractLocation, overWrite);
             File.Delete(addonZipLocation);
             return true;
@@ -42,19 +45,22 @@ namespace ModManager.ModSystem
             }
         }
 
-        private bool TryGetExistingModFolder(Mod modInfo, out string dirs)
+        private bool TryGetExistingModFolder(Mod modInfo, out string directoryPath)
         {
-            dirs = null;
+            directoryPath = null;
             try
             {
-                dirs = Directory.GetDirectories(Paths.Mods, $"{modInfo.NameId}_{modInfo.Id}*").SingleOrDefault();
+                directoryPath ??= Directory.GetDirectories(Paths.Mods, $"{modInfo.NameId}_{modInfo.Id}*").SingleOrDefault();
+                
+                if (InstalledAddonRepository.Instance.TryGet(modInfo.Id, out var modManagerManifest)) 
+                    directoryPath ??= modManagerManifest.RootPath;
             }
             catch (InvalidOperationException ex)
             {
                 throw new AddonExtractorException($"Found multiple folders for \"{modInfo.Name}\"");
             }
 
-            if (dirs != null)
+            if (directoryPath != null)
             {
                 return true;
             }

@@ -38,3 +38,4 @@ Mods.CrashInfo,"It seems the game crashed while trying to load into the game. Be
 Mods.EnableAll,Enable all mods,-
 Mods.DisableAll,Disable all mods,-
 Mods.GoToCrashReport,Go to Crash report,-
+Mods.Browser,Mod Browser,-
