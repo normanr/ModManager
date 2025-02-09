@@ -30,7 +30,7 @@ namespace ModManagerUI
                 if (mod.Manifest.Id != ModHelper.ModManagerStringId) 
                     continue;
                 var modIoMod = ModIoModRegistry.Get(ModHelper.ModManagerUintId);
-                var modManagerManifest = new ModManagerManifest(mod.ModDirectory.Directory.FullName, modIoMod, mod.Manifest.Version.Version);
+                var modManagerManifest = new ModManagerManifest(mod.ModDirectory.Directory.FullName, modIoMod, mod.Manifest.Version.Numeric);
                 var modManifestPath = Path.Combine(mod.ModDirectory.Directory.FullName, ModManagerManifest.FileName);
                 _persistenceService.SaveObject(modManagerManifest, modManifestPath);
                 InstalledAddonRepository.Instance.Add(modManagerManifest);

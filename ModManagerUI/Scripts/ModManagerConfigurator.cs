@@ -8,22 +8,22 @@ using Timberborn.SliderToggleSystem;
 namespace ModManagerUI
 {
     [Context("MainMenu")]
-    public class ModManagerConfigurator : IConfigurator
+    public class ModManagerConfigurator : Configurator
     {
-        public void Configure(IContainerDefinition containerDefinition)
+        protected override void Configure()
         {
-            containerDefinition.MultiBind<IManifestValidator>().To<MapManifestValidator>().AsSingleton();
-            containerDefinition.Bind<ManifestValidatorService>().AsSingleton();
+            MultiBind<IManifestValidator>().To<MapManifestValidator>().AsSingleton();
+            Bind<ManifestValidatorService>().AsSingleton();
             
-            containerDefinition.Bind<ModManagerRegisterer>().AsSingleton();
-            containerDefinition.Bind<ModManagerPanel>().AsSingleton();
-            containerDefinition.Bind<GoodbyeBoxFactory>().AsSingleton();
-            containerDefinition.Bind<ModFullInfoController>().AsSingleton();
-            containerDefinition.Bind<SliderToggleButtonFactory>().AsSingleton();
-            containerDefinition.Bind<SliderToggleFactory>().AsSingleton();
-            containerDefinition.Bind<UpdateableModRegistry>().AsSingleton();
-            containerDefinition.Bind<IModManagerLogger>().To<ModManagerLogger>().AsSingleton();
-            containerDefinition.Bind<MainMenuButtonAdder>().AsSingleton();
+            Bind<ModManagerRegisterer>().AsSingleton();
+            Bind<ModManagerPanel>().AsSingleton();
+            Bind<GoodbyeBoxFactory>().AsSingleton();
+            Bind<ModFullInfoController>().AsSingleton();
+            Bind<SliderToggleButtonFactory>().AsSingleton();
+            Bind<SliderToggleFactory>().AsSingleton();
+            Bind<UpdateableModRegistry>().AsSingleton();
+            Bind<IModManagerLogger>().To<ModManagerLogger>().AsSingleton();
+            Bind<MainMenuButtonAdder>().AsSingleton();
         }
     }
 }

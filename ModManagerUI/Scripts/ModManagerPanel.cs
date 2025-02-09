@@ -38,7 +38,6 @@ namespace ModManagerUI
         public static ModRepository ModRepository = null!;
         public static IAssetLoader AssetLoader = null!;
         public static PanelStack PanelStack = null!;
-        public static ModLoader ModLoader = null!;
         public static ILoc Loc = null!;
         
         private readonly VisualElementInitializer _visualElementInitializer;
@@ -75,7 +74,6 @@ namespace ModManagerUI
             ModRepository modRepository,
             IAssetLoader assetLoader,
             PanelStack panelStack,
-            ModLoader modLoader,
             ILoc loc,
             
             VisualElementInitializer visualElementInitializer,
@@ -90,7 +88,6 @@ namespace ModManagerUI
             ModRepository = modRepository;
             AssetLoader = assetLoader;
             PanelStack = panelStack;
-            ModLoader = modLoader;
             Loc = loc;
             
             _visualElementInitializer = visualElementInitializer;

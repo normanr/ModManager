@@ -16,16 +16,14 @@ namespace ModManager.MapSystem
     {
         private readonly InstalledAddonRepository _installedAddonRepository;
         private readonly AddonExtractorService _addonExtractorService;
-        private readonly ModLoader _modLoader;
 
         private readonly PersistenceService _persistenceService = PersistenceService.Instance;
         private readonly MapManifestFinder _mapManifestFinder = new();
 
-        public MapInstaller(InstalledAddonRepository installedAddonRepository, AddonExtractorService addonExtractorService, ModLoader modLoader)
+        public MapInstaller(InstalledAddonRepository installedAddonRepository, AddonExtractorService addonExtractorService)
         {
             _installedAddonRepository = installedAddonRepository;
             _addonExtractorService = addonExtractorService;
-            _modLoader = modLoader;
         }
 
         public bool Install(Mod mod, string zipLocation)

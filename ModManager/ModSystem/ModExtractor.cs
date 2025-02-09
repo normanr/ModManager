@@ -23,9 +23,9 @@ namespace ModManager.ModSystem
             var modFolderName = $"{modInfo.NameId}_{modInfo.Id}_{modInfo.Modfile?.Version}";
             ClearOldModFiles(modInfo, modFolderName);
             extractLocation = Path.Combine(Paths.Mods, modFolderName);
-            if (!Directory.Exists(extractLocation)) 
+            if (!Directory.Exists(extractLocation))
                 Directory.CreateDirectory(extractLocation);
-            ExtractContent(addonZipLocation, extractLocation, overWrite);
+            ExtractZipWithoutCommonRoot(addonZipLocation, extractLocation);
             File.Delete(addonZipLocation);
             return true;
         }
@@ -51,8 +51,8 @@ namespace ModManager.ModSystem
             try
             {
                 directoryPath ??= Directory.GetDirectories(Paths.Mods, $"{modInfo.NameId}_{modInfo.Id}*").SingleOrDefault();
-                
-                if (InstalledAddonRepository.Instance.TryGet(modInfo.Id, out var modManagerManifest)) 
+
+                if (InstalledAddonRepository.Instance.TryGet(modInfo.Id, out var modManagerManifest))
                     directoryPath ??= modManagerManifest.RootPath;
             }
             catch (InvalidOperationException ex)
@@ -111,81 +111,56 @@ namespace ModManager.ModSystem
             }
         }
 
-        private static void ExtractContent(string zipFilePath, string extractPath, bool overWrite)
+        private static void ExtractZipWithoutCommonRoot(string zipFilePath, string extractPath)
         {
-            using (var archive = ZipFile.OpenRead(zipFilePath))
+            using var archive = ZipFile.OpenRead(zipFilePath);
+            
+            var allPaths = archive.Entries
+                .Where(e => !string.IsNullOrEmpty(e.Name))
+                .Select(e => e.FullName)
+                .ToList();
+
+            var commonRoot = GetCommonRoot(allPaths);
+
+            foreach (var entry in archive.Entries)
             {
-                var entry = archive.Entries.FirstOrDefault(entry => entry.FullName.EndsWith("manifest.json", StringComparison.OrdinalIgnoreCase));
+                if (string.IsNullOrEmpty(entry.Name))
+                    continue;
 
-                if (entry != null)
+                var relativePath = entry.FullName.StartsWith(commonRoot)
+                    ? entry.FullName.Substring(commonRoot.Length).TrimStart('/')
+                    : entry.FullName;
+
+                var destinationFilePath = Path.Combine(extractPath, relativePath);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
+
+                entry.ExtractToFile(destinationFilePath, overwrite: true);
+            }
+        }
+
+        private static string GetCommonRoot(IReadOnlyCollection<string> paths)
+        {
+            if (!paths.Any()) return "";
+
+            var splitPaths = paths.Select(path => path.Split('/')).ToList();
+            var minLength = splitPaths.Min(splitPath => splitPath.Length);
+
+            var commonRoot = "";
+            for (var i = 0; i < minLength; i++)
+            {
+                var segment = splitPaths[0][i];
+                if (splitPaths.All(p => p[i] == segment))
                 {
-                    string folderPath;
-                    if (string.IsNullOrEmpty(Path.GetDirectoryName(entry.FullName)))
-                        folderPath = "";
-                    else
-                        folderPath = Path.GetDirectoryName(entry.FullName) + "/";
-
-                    foreach (var e in archive.Entries)
-                    {
-                        if (!e.FullName.StartsWith(folderPath, StringComparison.OrdinalIgnoreCase)) 
-                            continue;
-                        var relativePath = e.FullName.Substring(folderPath.Length);
-                        var destinationPath = Path.GetFullPath(Path.Combine(extractPath, relativePath));
-
-                        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-
-                        if (e.Name == "")
-                        {
-                            Directory.CreateDirectory(destinationPath);
-                        }
-                        else
-                        {
-                            e.ExtractToFile(destinationPath, overwrite: true);
-                        }
-                    }
+                    commonRoot = commonRoot == "" ? segment : $"{commonRoot}/{segment}";
                 }
                 else
                 {
-                    ZipFile.ExtractToDirectory(zipFilePath, extractPath, overWrite);
+                    break;
                 }
             }
-            
-            // using (var archive = ZipFile.OpenRead(zipFilePath))
-            // {
-            //     var rootEntries = archive.Entries.Where(entry => entry.FullName.EndsWith('/')).Where(e => e.FullName.Count(c => c == '/') <= 1).ToList();
-            //     if (rootEntries.Count != 1)
-            //     {
-            //         ZipFile.ExtractToDirectory(zipFilePath, extractPath, overWrite);
-            //         return;
-            //     }
-            //     
-            //     var rootEntry = rootEntries[0];
-            //     if (!rootEntry.FullName.EndsWith("/")) 
-            //     {
-            //         ZipFile.ExtractToDirectory(zipFilePath, extractPath, overWrite);
-            //         return;
-            //     }
-            //
-            //     var rootFolderName = rootEntry.FullName;
-            //
-            //     Directory.CreateDirectory(extractPath);
-            //
-            //     foreach (var entry in archive.Entries)
-            //     {
-            //         if (!entry.FullName.StartsWith(rootFolderName) || entry.FullName == rootFolderName) 
-            //             continue;
-            //         var destinationPath = Path.Combine(extractPath, entry.FullName.Substring(rootFolderName.Length));
-            //         if (entry.FullName.EndsWith("/"))
-            //         {
-            //             Directory.CreateDirectory(destinationPath);
-            //         }
-            //         else
-            //         {
-            //             Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-            //             entry.ExtractToFile(destinationPath, overwrite: true);
-            //         }
-            //     }
-            // }
+
+            return commonRoot + "/";
         }
     }
 }

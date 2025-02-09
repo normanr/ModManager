@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using ModManager.AddonSystem;
+using ModManagerUI.StaticInstanceSystem;
 using Timberborn.Modding;
 using Timberborn.Versioning;
 using UnityEngine;
@@ -55,7 +56,7 @@ namespace ModManagerUI
             {
                 if (InstalledAddonRepository.Instance.TryGet(modId, out var modManagerManifest))
                 {
-                    if (ModManagerPanel.ModLoader.TryLoadMod(new ModDirectory(new DirectoryInfo(modManagerManifest.RootPath), true, "Local", Versions.CurrentGameVersion, false), out var timberbornMod))
+                    if (StaticInstanceLoader.ModLoader.TryLoadMod(new ModDirectory(new DirectoryInfo(modManagerManifest.RootPath), true, "Local", GameVersions.CurrentVersion, false), out var timberbornMod))
                     {
                         ModPlayerPrefsHelper.ToggleMod(newState, timberbornMod);
                         ModManagerPanel.ModsWereChanged = true;
