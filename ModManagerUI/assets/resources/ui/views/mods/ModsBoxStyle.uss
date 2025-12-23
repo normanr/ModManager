@@ -40,11 +40,11 @@
     height: 24px;
     width: 24px;
     margin-left: 8px;
-    background-image: url('/assets/resources/UI/Images/Mods/search.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/search.png');
 }
 
 .mods-box__search-button:enabled:hover {
-    background-image: url('/assets/resources/UI/Images/Mods/search--hover.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/search--hover.png');
 }
 
 .mods-box__tags-label {
@@ -104,7 +104,7 @@
     width: 16px;
     margin-left: 4px;
     margin-right: 4px;
-    background-image: url('/assets/resources/UI/Images/Mods/thumbs-up.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/thumbs-up.png');
 }
 
 .mods-box-item__down-icon {
@@ -112,7 +112,7 @@
     width: 16px;
     margin-left: 12px;
     margin-right: 4px;
-    background-image: url('/assets/resources/UI/Images/Mods/thumbs-down.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/thumbs-down.png');
 }
 
 .mods-box-item__logo {
@@ -133,7 +133,7 @@
     width: 23px;
     margin-left: auto;
     margin-right: 4px;
-    background-image: url('/assets/resources/UI/Images/Mods/download.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/download.png');
 }
 
 .mods-box-item__version-status {
@@ -144,19 +144,19 @@
 .mods-box-item__status-unknown {
     height: 24px;
     width: 24px;
-    background-image: url('/assets/resources/UI/Images/Mods/status-unknown.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/status-unknown.png');
 }
 
 .mods-box-item__status-compatible {
     height: 24px;
     width: 24px;
-    background-image: url('/assets/resources/UI/Images/Mods/status-compatible.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/status-compatible.png');
 }
 
 .mods-box-item__status-incompatible {
     height: 24px;
     width: 24px;
-    background-image: url('/assets/resources/UI/Images/Mods/status-incompatible.png');
+    background-image: url('/Assets/Mods/ModManagerUI/AssetBundles/Resources/UI/Images/Mods/status-incompatible.png');
 }
 
 .mods-box-full-item {
