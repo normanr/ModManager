@@ -81,7 +81,12 @@ namespace ModManagerUI
             {
                 if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out var manifest) && manifest.Version != mod.Mod.Modfile.Version)
                 {
+                    var enabledState = EnabledHelper.GetEnabledState(manifest);
                     AddonService.ChangeVersion(mod.Mod, mod.Mod.Modfile, mod.location);
+                    if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out manifest))
+                    {
+                        EnableController.RestoreEnabledState(manifest, enabledState);
+                    }
                 }
                 else
                 {

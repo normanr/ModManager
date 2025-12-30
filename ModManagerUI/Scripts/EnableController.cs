@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using ModManager.AddonSystem;
 using Timberborn.Modding;
 using UnityEngine;
@@ -65,6 +66,18 @@ namespace ModManagerUI
                 Debug.LogWarning(ex.Message);
             }
             modCard?.ModActionStopped();
+        }
+
+        public static void RestoreEnabledState(ModManagerManifest modManagerManifest, KeyValuePair<string, int>? previousState)
+        {
+            if (previousState == null)
+                return;
+            if (ModHelper.TryLoadMod(modManagerManifest, out var timberbornMod))
+            {
+                string modEnabledKey = ModPlayerPrefsHelper.GetModEnabledKey(timberbornMod);
+                PlayerPrefs.SetInt(modEnabledKey, previousState.Value.Value);
+                PlayerPrefs.DeleteKey(previousState.Value.Key);
+            }
         }
     }
 }
