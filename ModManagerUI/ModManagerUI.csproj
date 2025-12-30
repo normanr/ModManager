@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
 	  <TargetFramework>netstandard2.1</TargetFramework>
 	  <Nullable>enable</Nullable>
@@ -10,15 +9,11 @@
 	
 	<PropertyGroup>
 		<!--   Set to true if you want to use the live timberborn assemblies of the game, requires symlink     -->
-		<UseLocalTimberbornSource>false</UseLocalTimberbornSource>
-		<!--   none: don't copy, bepinex: path to game > bepinex > plugins, timberapi: path to game > timberapi     -->
-		<CopyDllToPath>bepinex</CopyDllToPath>
+		<UseLocalTimberbornSource>true</UseLocalTimberbornSource>
 	</PropertyGroup>
 	
 	<ItemGroup>
 	  <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-	  <PackageReference Include="TimberApi" Version="0.5.1" />
-	  <PackageReference Include="Timberborn.GameLibs" Version="0.5.7-r.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -32,7 +27,22 @@
   </ItemGroup>
 
 	<!--    Import dll's from Timberborn's symlink in solution folder-->
-
+	<ItemGroup Condition="$(UseLocalTimberbornSource)">
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" />
+		<Reference Include="$(TimberbornPath)Timberborn_Data\Managed\Timberborn.*.dll" Publicize="true">
+			<DestinationSubDirectory>libs/</DestinationSubDirectory>
+		</Reference>
+		<Reference Include="$(TimberbornPath)Timberborn_Data\Managed\Bindito.*.dll">
+			<DestinationSubDirectory>libs/</DestinationSubDirectory>
+		</Reference>
+		<Reference Include="$(TimberbornPath)Timberborn_Data\Managed\UnityEngine.*.dll">
+			<DestinationSubDirectory>libs/</DestinationSubDirectory>
+		</Reference>
+		<Reference Include="$(TimberbornPath)Timberborn_Data\Managed\System.Collections.Immutable.dll">
+			<DestinationSubDirectory>libs/</DestinationSubDirectory>
+		</Reference>
+	</ItemGroup>
+	
 	<ItemGroup>
 		<Reference Include="Modio">
 			<HintPath>libs\Modio.dll</HintPath>
@@ -40,29 +50,46 @@
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="assets\lang\" />
+	<ItemGroup Condition="$(UseLocalTimberbornSource)">
+		<Reference Include="$(TimberbornPath)Timberborn_Data\Managed\com.rlabrecque.steamworks.net.dll">
+			<DestinationSubDirectory>libs/</DestinationSubDirectory>
+		</Reference>
 	</ItemGroup>
 
-	<!--    Used for automaticly transfer dll to Timberborn location, make a symlink `Timberborn` in the solution folder -->
-	<PropertyGroup Condition="$(CopyDllToPath) == 'timberapi'">
-		<TimberApiPath>$(SolutionDir)Timberborn\TimberAPI</TimberApiPath>
+	<PropertyGroup>
+		<AssetBundlesPath>$(ProjectDir)assets\assetbundles\**\*</AssetBundlesPath>
+		<LocalizationsPath>$(ProjectDir)assets\lang\**\*</LocalizationsPath>
+		<SpritesPath>$(ProjectDir)assets\resources\ui\images\**\*</SpritesPath>
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<AssetBundles Include="$(AssetBundlesPath)" />
+		<Localizations Include="$(LocalizationsPath)" />
+		<Sprites Include="$(SpritesPath)" />
+	</ItemGroup>
 
-	<PropertyGroup Condition="$(CopyDllToPath) == 'bepinex'">
-		<TimberApiPath>$(SolutionDir)Timberborn\BepInEx\plugins\$(SolutionName)</TimberApiPath>
+	<PropertyGroup>
+		<ModManagerPath>$(USERPROFILE)\Documents\Timberborn\Mods\$(SolutionName)\version-1.0.6</ModManagerPath>
+		<TimberbornPath>$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steamapps\common\Timberborn\</TimberbornPath>
 	</PropertyGroup>
 
 	<Target Name="AutomaticCopyToTimberborn" BeforeTargets="AfterBuild">
 		<Message Text="### Copy TimberApi common ###" Importance="high" />
-		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(TimberApiPath)" />
-		<Copy SourceFiles="$(ProjectDir)\libs\Microsoft.Bcl.AsyncInterfaces.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Buffers.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Linq.Async.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Numerics.Vectors.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Encodings.Web.dll" DestinationFolder="$(TimberApiPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Json.dll" DestinationFolder="$(TimberApiPath)\libs" />
+		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
+		<Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManagerUI.pdb" DestinationFolder="$(ModManagerPath)" />
+		<Copy SourceFiles="$(ProjectDir)\libs\Microsoft.Bcl.AsyncInterfaces.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\System.Buffers.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\System.Linq.Async.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\System.Numerics.Vectors.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Encodings.Web.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Json.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\manifest.json" DestinationFolder="$(ModManagerPath)" />
+		<Copy SourceFiles="$(ProjectDir)\thumbnail.jpg" DestinationFolder="$(ModManagerPath)\.." />
+		<Copy SourceFiles="$(ProjectDir)\workshop_data.json" DestinationFolder="$(ModManagerPath)\.." />
+		<Copy SourceFiles="@(AssetBundles)"  DestinationFolder="$(ModManagerPath)\AssetBundles" />
+		<Copy SourceFiles="@(Localizations)" DestinationFolder="$(ModManagerPath)\Localizations" />
+		<Copy SourceFiles="@(Sprites)" DestinationFolder="$(ModManagerPath)\Sprites" />
+		<Exec Command='"$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steam.exe" -applaunch 1062090'/>
 	</Target>
-
 </Project>
