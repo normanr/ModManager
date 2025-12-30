@@ -43,10 +43,10 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
             radioButtonGroup.choices = formatTags ? _tagOption.Tags.Select(FormatTag) : _tagOption.Tags;
             radioButtonGroup.RegisterValueChangedCallback(_ => OnValueChanged());
 
-            foreach (var radioButton in radioButtonGroup.Children())
+            radioButtonGroup.Query<RadioButton>().ForEach(radioButton =>
             {
                 radioButton.RegisterCallback((ClickEvent @event) => ClickTagRadioButton(@event));
-            }
+            });
 
             RadioButtonGroup = radioButtonGroup;
             
@@ -84,6 +84,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         
         protected virtual void OnValueChanged()
         {
+            _tagsLastValue = RadioButtonGroup.value;
             EventBus.Instance.PostEvent(new ModManagerPanelRefreshEvent());
         }
 
@@ -101,10 +102,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
             if (_tagsLastValue == thirdParent.value)
             {
                 thirdParent.value = -1;
-                _tagsLastValue = -1;
-                return;
             }
-            _tagsLastValue = thirdParent.value;
         }
     }
 }
