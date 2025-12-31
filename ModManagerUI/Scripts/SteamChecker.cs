@@ -14,7 +14,7 @@ namespace ModManagerUI
                 return false;
             var currentProcess = Process.GetCurrentProcess();
             var parentProcess = GetParentProcess(currentProcess.Id);
-            return parentProcess != null && parentProcess.ProcessName.ToLower() == "steam";
+            return parentProcess != null && !parentProcess.HasExited && parentProcess.ProcessName.ToLower() == "steam";
         }
 
         private static Process? GetParentProcess(int id)
