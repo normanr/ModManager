@@ -1,6 +1,4 @@
-﻿using ModManager.LoggingSystem;
-
-namespace ModManager.StartupSystem
+﻿namespace ModManager.StartupSystem
 {
     public class ModManagerStartupOptions
     {
@@ -15,7 +13,5 @@ namespace ModManager.StartupSystem
         public string GamePath { get; set; } = null!;
 
         public string ModManagerPath { get; set; } = null!;
-
-        public IModManagerLogger Logger { get; set; } = null!;
     }
 }

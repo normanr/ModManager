@@ -1,5 +1,4 @@
 using Bindito.Core;
-using ModManager.LoggingSystem;
 using ModManager.ManifestValidatorSystem;
 using ModManager.MapSystem;
 using Timberborn.GameExitSystem;
@@ -22,7 +21,6 @@ namespace ModManagerUI
             Bind<SliderToggleButtonFactory>().AsSingleton();
             Bind<SliderToggleFactory>().AsSingleton();
             Bind<UpdateableModRegistry>().AsSingleton();
-            Bind<IModManagerLogger>().To<ModManagerLogger>().AsSingleton();
             Bind<MainMenuButtonAdder>().AsSingleton();
         }
     }

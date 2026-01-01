@@ -19,7 +19,6 @@ namespace ModManagerUI
                 options.ModInstallationPath = Path.Combine(UserDataFolder.Folder, UserFolderModsProvider.ModsDirectoryName);
                 options.ModIoGameUrl = "https://mod.io/g/timberborn";
                 options.ModManagerPath = modEnvironment.ModPath;
-                options.Logger = new ModManagerLogger();
             });
         }
     }
