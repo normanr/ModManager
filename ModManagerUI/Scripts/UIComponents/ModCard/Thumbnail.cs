@@ -28,7 +28,7 @@ namespace ModManagerUI.UIComponents.ModCard
                 return;
             try
             {
-                var bytes = await AddonService.Instance.GetImage(_mod.Logo.Thumb320x180);
+                var bytes = await AddonService.Instance!.GetImage(_mod.Logo.Thumb320x180);
                 var texture = new Texture2D(0, 0);
                 texture.LoadImage(bytes);
                 _root.image = texture;

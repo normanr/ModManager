@@ -217,7 +217,7 @@ namespace ModManagerUI
             List<string> dependencyNames = new();
             foreach (var dependency in dependencies)
             {
-                dependencyNames.Add(ModIoModRegistry.Get(dependency.ModId).Name);
+                dependencyNames.Add(ModIoModRegistry.Get(dependency.ModId).Name!);
             }
 
             item.Q<Label>("Dependencies").text = dependencyNames.Any() ? string.Join(Environment.NewLine, dependencyNames) : "-";

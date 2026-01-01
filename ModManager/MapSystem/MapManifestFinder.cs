@@ -29,7 +29,7 @@ namespace ModManager.MapSystem
                 UpdateManifestInfo(manifests);
                 return manifests;
             }
-            catch (JsonSerializationException ex)
+            catch (JsonSerializationException)
             {
                 Debug.LogWarning($"Failed to serialize JSON in file {manifestPath}. It is advised to delete the file.");
                 return new List<MapModManagerManifest>();

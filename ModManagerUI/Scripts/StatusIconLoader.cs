@@ -13,7 +13,7 @@ namespace ModManagerUI
         public Sprite CompatibleSprite => _compatibleSprite ??= LoadSprite("ui/images/mods/status-compatible");
         public Sprite IncompatibleSprite => _incompatibleSprite ??= LoadSprite("ui/images/mods/status-incompatible");
 
-        private static readonly float ImageSizeMultiplier = 0.6f;
+        // private static readonly float ImageSizeMultiplier = 0.6f;
 
         private static Sprite LoadSprite(string path)
         {

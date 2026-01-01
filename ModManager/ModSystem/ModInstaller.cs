@@ -81,7 +81,7 @@ namespace ModManager.ModSystem
                 {
                     file.Delete();
                 }
-                catch (UnauthorizedAccessException ex)
+                catch (UnauthorizedAccessException)
                 {
                     file.MoveTo($"{file.FullName}{Names.Extensions.Remove}");
                 }

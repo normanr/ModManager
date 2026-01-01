@@ -51,7 +51,7 @@ namespace ModManagerUI
                 File? file;
                 try
                 {
-                    file = await AddonService.Instance.TryGetCompatibleVersion(manifest.ResourceId, ModManagerPanel.CheckForHighestInsteadOfLive);
+                    file = await AddonService.Instance!.TryGetCompatibleVersion(manifest.ResourceId, ModManagerPanel.CheckForHighestInsteadOfLive);
                 }
                 catch (Exception)
                 {

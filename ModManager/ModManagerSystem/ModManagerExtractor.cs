@@ -11,7 +11,7 @@ namespace ModManager.ModManagerSystem
 {
     public class ModManagerExtractor : Singleton<ModManagerExtractor>, IAddonExtractor, ILoadable
     {
-        private string _modManagerFolderPath;
+        private string? _modManagerFolderPath;
         private const string _modManagerPackageName = "Mod Manager";
         private List<string> _foldersToIgnore = new() { "temp" };
         
@@ -27,8 +27,8 @@ namespace ModManager.ModManagerSystem
             {
                 return false;
             }
-            ClearOldModFiles(_modManagerFolderPath);
-            extractLocation = _modManagerFolderPath;
+            ClearOldModFiles(_modManagerFolderPath!);
+            extractLocation = _modManagerFolderPath!;
             ZipFile.ExtractToDirectory(addonZipLocation, Paths.Mods, overWrite);
             System.IO.File.Delete(addonZipLocation);
 
@@ -70,17 +70,17 @@ namespace ModManager.ModManagerSystem
                     }
                     file.Delete();
                 }
-                catch (UnauthorizedAccessException ex)
+                catch (UnauthorizedAccessException)
                 {
                     file.MoveTo($"{file.FullName}{Names.Extensions.Remove}");
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     try
                     {
                         file.MoveTo($"{file.FullName}{Names.Extensions.Remove}");
                     }
-                    catch(IOException ex2)
+                    catch(IOException)
                     {
                         throw;
                     }

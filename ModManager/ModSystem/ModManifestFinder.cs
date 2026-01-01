@@ -60,7 +60,7 @@ namespace ModManager.ModSystem
                 manifest.RootPath = Path.GetDirectoryName(manifestPath)!;
                 return manifest;
             }
-            catch (JsonSerializationException ex)
+            catch (JsonSerializationException)
             {
                 Debug.LogWarning($"Failed to serialize JSON in file {manifestPath} It is advised to delete the file.");
                 return null;

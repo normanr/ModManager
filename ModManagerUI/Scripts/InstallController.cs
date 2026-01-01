@@ -13,7 +13,7 @@ namespace ModManagerUI
 {
     public class InstallController : Singleton<InstallController>
     {
-        private static readonly AddonService AddonService = AddonService.Instance;
+        private static readonly AddonService? AddonService = AddonService.Instance;
         
         public static async Task DownloadAndExtract(Mod mod, File? file)
         {
@@ -23,7 +23,7 @@ namespace ModManagerUI
             try
             {
                 if (file != null) mod.Modfile = file;
-                var downloadedMod = await AddonService.Download(mod);
+                var downloadedMod = await AddonService!.Download(mod);
                 TryInstall(downloadedMod);
             }
             catch (MapException ex)
@@ -47,7 +47,7 @@ namespace ModManagerUI
         
         public static async Task DownloadAndExtractWithDependencies(Mod mod)
         {
-            var file = await AddonService.TryGetCompatibleVersion(mod.Id, ModManagerPanel.CheckForHighestInsteadOfLive);
+            var file = await AddonService!.TryGetCompatibleVersion(mod.Id, ModManagerPanel.CheckForHighestInsteadOfLive);
             await DownloadAndExtract(mod, file);
             await foreach (var dependency in AddonService.GetDependencies(mod))
             {
@@ -66,7 +66,7 @@ namespace ModManagerUI
             
             try
             {
-                AddonService.Uninstall(mod.Id);
+                AddonService!.Uninstall(mod.Id);
             }
             catch (IOException ex)
             {
@@ -86,11 +86,11 @@ namespace ModManagerUI
             {
                 if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out var manifest) && manifest.Version != mod.Mod.Modfile!.Version)
                 {
-                    AddonService.ChangeVersion(mod.Mod, mod.location);
+                    AddonService!.ChangeVersion(mod.Mod, mod.location);
                 }
                 else
                 {
-                    AddonService.Install(mod.Mod, mod.location);
+                    AddonService!.Install(mod.Mod, mod.location);
                 }
             }
             catch (MapException ex)

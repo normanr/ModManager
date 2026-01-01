@@ -14,7 +14,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         
         private int _tagsLastValue = -1;
 
-        public RadioButtonGroup RadioButtonGroup { get; private set; }
+        public RadioButtonGroup? RadioButtonGroup { get; private set; }
         
         public List<string> TagOptions => _tagOption.Tags;
         
@@ -55,12 +55,12 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
 
         public bool HasTagSelected()
         {
-            return RadioButtonGroup.value != -1;
+            return RadioButtonGroup!.value != -1;
         }
 
         public string GetActiveTag()
         {
-            return TagOptions[RadioButtonGroup.value];
+            return TagOptions[RadioButtonGroup!.value];
         }
 
         private static string FormatTag(string text)
@@ -84,24 +84,15 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         
         protected virtual void OnValueChanged()
         {
-            _tagsLastValue = RadioButtonGroup.value;
+            _tagsLastValue = RadioButtonGroup!.value;
             EventBus.Instance.PostEvent(new ModManagerPanelRefreshEvent());
         }
 
         protected virtual void ClickTagRadioButton(ClickEvent clickEvent)
         {
-            if (clickEvent.currentTarget.GetType() != typeof(RadioButton))
-                return;
-
-            var target = (RadioButton)clickEvent.currentTarget;
-            // Hacky way to get parent TagRadioButtonGroup
-            var parent = target.parent;
-            var secondParent = parent.parent;
-            var thirdParent = (RadioButtonGroup)secondParent.parent;
-
-            if (_tagsLastValue == thirdParent.value)
+            if (_tagsLastValue == RadioButtonGroup!.value)
             {
-                thirdParent.value = -1;
+                RadioButtonGroup.value = -1;
             }
         }
     }

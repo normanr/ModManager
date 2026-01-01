@@ -77,7 +77,7 @@ namespace ModManagerUI
             ILoc loc,
             
             VisualElementInitializer visualElementInitializer,
-            InstalledAddonRepository? installedAddonRepository,
+            InstalledAddonRepository installedAddonRepository,
             VisualElementLoader visualElementLoader,
             ExperimentalMode experimentalMode,
             DialogBoxShower dialogBoxShower)

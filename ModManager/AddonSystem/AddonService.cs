@@ -15,7 +15,7 @@ namespace ModManager.AddonSystem
 {
     public class AddonService
     {
-        public static AddonService Instance;
+        public static AddonService? Instance;
 
         private readonly InstalledAddonRepository _installedAddonRepository;
         private readonly AddonInstallerService _addonInstallerService;

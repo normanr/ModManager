@@ -45,7 +45,7 @@ namespace ModManager.ModSystem
             }
         }
 
-        private bool TryGetExistingModFolder(Mod modInfo, out string directoryPath)
+        private bool TryGetExistingModFolder(Mod modInfo, out string? directoryPath)
         {
             directoryPath = null;
             try
@@ -55,7 +55,7 @@ namespace ModManager.ModSystem
                 if (InstalledAddonRepository.Instance.TryGet(modInfo.Id, out var modManagerManifest))
                     directoryPath ??= modManagerManifest.RootPath;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 throw new AddonExtractorException($"Found multiple folders for \"{modInfo.Name}\"");
             }
@@ -92,7 +92,7 @@ namespace ModManager.ModSystem
                 {
                     file.Delete();
                 }
-                catch (UnauthorizedAccessException ex)
+                catch (UnauthorizedAccessException)
                 {
                     file.MoveTo($"{file.FullName}{Names.Extensions.Remove}");
                 }
