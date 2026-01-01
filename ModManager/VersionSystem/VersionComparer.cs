@@ -1,19 +1,19 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ModManager.VersionSystem
 {
     public static class VersionComparer
     {
+        private static readonly Regex digits = new("\\d+");
+
         public static bool IsVersionHigher(string? version1, string? version2)
         {
             if (string.IsNullOrEmpty(version1)) { return false; }
             if (string.IsNullOrEmpty(version2)) { return true; }
 
-            version1 = version1.Replace(" ", "");
-            version2 = version2.Replace(" ", "");
-            
-            var version1Parts = version1.Split('.');
-            var version2Parts = version2.Split('.');
+            var version1Parts = digits.Matches(version1).Select(m => m.Value).ToList();
+            var version2Parts = digits.Matches(version2).Select(m => m.Value).ToList();
 
             for (var i = 0; i < version1Parts.Count(); i++)
             {
@@ -42,8 +42,8 @@ namespace ModManager.VersionSystem
             if (version1 == null || version2 == null)
                 return false;
             
-            version1 = version1.Replace(" ", "");
-            version2 = version2.Replace(" ", "");
+            version1 = version1.Trim();
+            version2 = version2.Trim();
             
             return version1 == version2;
         }
