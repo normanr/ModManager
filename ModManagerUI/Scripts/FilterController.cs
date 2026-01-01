@@ -19,24 +19,25 @@ namespace ModManagerUI
             var filter = SortingButtonsManager.GetFilter();
 
             if (search != null && !string.IsNullOrEmpty(search.value))
-            {
                 filter = filter.And(ModFilter.FullText.Eq(search.value));
-            }
-            
-            filter = filter.And(CreateTagsFilter(tagsWrapper));
+
+            var tagsFilter = CreateTagsFilter(tagsWrapper);
+            if (tagsFilter != null)
+                filter = filter.And(tagsFilter);
 
             var namesFilter = CreateIdsFilter(excludeNames);
             if (namesFilter != null) 
                 filter = filter.And(namesFilter);
 
-            filter = filter.And(ModFilter.Id.NotIn(excludeNames));
+            if (excludeNames.Count != 0)
+                filter = filter.And(ModFilter.Id.NotIn(excludeNames));
 
             filter = filter.And(Filter.WithLimit(ModManagerPanel.ModsPerPage));
 
             return filter;
         }
 
-        private static Filter CreateTagsFilter(VisualElement tagsWrapper)
+        private static Filter? CreateTagsFilter(VisualElement tagsWrapper)
         {
             var tags = new List<string>();
             
@@ -47,14 +48,16 @@ namespace ModManagerUI
                 tags.Add(tagRadioButtonGroup.GetActiveTag());
             }
             
-            var checkedToggles = tagsWrapper.Children().Where(x => x.GetType() == typeof(Toggle) && ((Toggle)x).value).ToList();
+            var checkedToggles = tagsWrapper.Query<Toggle>().Where(x => x.value).ToList();
 
             foreach (Toggle toggle in checkedToggles)
             {
                 tags.Add(toggle.text);
             }
 
-            return ModFilter.Tags.In(tags);
+            if (tags.Count == 0)
+                return null;
+            return ModFilter.Tags.Eq(string.Join(",", tags));
         }
         
         private static Filter? CreateIdsFilter(List<uint> excludeNames)

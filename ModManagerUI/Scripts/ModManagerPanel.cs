@@ -259,9 +259,12 @@ namespace ModManagerUI
 
             // _cancellationTokenSource2.Cancel();
             _cancellationTokenSource2 = new CancellationTokenSource();
-             var token = _cancellationTokenSource2.Token;
-            var filter = FilterController.Create(_search, _tagsWrapper.Root);
-            _getModsTask ??= ModIo.ModsClient.Search(filter).ToPagedEnumerable();
+            var token = _cancellationTokenSource2.Token;
+            if (_getModsTask == null)
+            {
+                var filter = FilterController.Create(_search, _tagsWrapper.Root);
+                _getModsTask = ModIo.ModsClient.Search(filter).ToPagedEnumerable();
+            }
             EventBus.Instance.PostEvent(new ModsRetrievedEvent(await _getModsTask.FirstAsync(token), token));
         }
         
