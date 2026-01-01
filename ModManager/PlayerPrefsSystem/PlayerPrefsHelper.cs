@@ -54,30 +54,46 @@ namespace ModManager.PlayerPrefsSystem
             return TryLoadMod(modManagerManifest, out _);
         }
 
-        public static KeyValuePair<string, int>? GetPlayerPrefs(uint modId)
+        public static ModPlayerPrefs? GetPlayerPrefs(uint modId)
         {
             if (!InstalledAddonRepository.Instance.TryGet(modId, out var modManagerManifest))
                 return null;
             if (!TryLoadMod(modManagerManifest, out var timberbornMod))
                 return null;
+            var modPrefs = new ModPlayerPrefs();
             string modEnabledKey = ModPlayerPrefsHelper.GetModEnabledKey(timberbornMod);
             if (PlayerPrefs.HasKey(modEnabledKey))
             {
-                return new KeyValuePair<string, int>(modEnabledKey, PlayerPrefs.GetInt(modEnabledKey));
+                modPrefs.EnabledKey = modEnabledKey;
+                modPrefs.Enabled = PlayerPrefs.GetInt(modEnabledKey);
             }
-            return null;
+            string modPriorityKey = ModPlayerPrefsHelper.GetModPriorityKey(timberbornMod);
+            if (PlayerPrefs.HasKey(modPriorityKey))
+            {
+                modPrefs.PriorityKey = modPriorityKey;
+                modPrefs.Priority = PlayerPrefs.GetInt(modPriorityKey);
+            }
+            return modPrefs;
         }
 
-        public static void RestorePlayerPrefs(ModManagerManifest modManagerManifest, KeyValuePair<string, int>? previousPrefs)
+        public static void RestorePlayerPrefs(ModManagerManifest modManagerManifest, ModPlayerPrefs? previousPrefs)
         {
             if (previousPrefs == null)
                 return;
             if (!TryLoadMod(modManagerManifest, out var timberbornMod))
                 return;
             string modEnabledKey = ModPlayerPrefsHelper.GetModEnabledKey(timberbornMod);
-            PlayerPrefs.SetInt(modEnabledKey, previousPrefs.Value.Value);
-            if (previousPrefs.Value.Key != modEnabledKey)
-                PlayerPrefs.DeleteKey(previousPrefs.Value.Key);
+            if (previousPrefs.EnabledKey != null && previousPrefs.EnabledKey != modEnabledKey)
+            {
+                PlayerPrefs.SetInt(modEnabledKey, previousPrefs.Enabled);
+                PlayerPrefs.DeleteKey(previousPrefs.EnabledKey);
+            }
+            string modPriorityKey = ModPlayerPrefsHelper.GetModPriorityKey(timberbornMod);
+            if (previousPrefs.PriorityKey != null && previousPrefs.PriorityKey != modPriorityKey)
+            {
+                PlayerPrefs.SetInt(modPriorityKey, previousPrefs.Priority);
+                PlayerPrefs.DeleteKey(previousPrefs.PriorityKey);
+            }
         }
     }
 }
