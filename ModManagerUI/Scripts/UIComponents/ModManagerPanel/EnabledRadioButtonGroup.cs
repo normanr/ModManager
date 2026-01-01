@@ -22,10 +22,10 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
             switch (enabledOptions)
             {
                 case EnabledOptions.Enabled:
-                    var enabledModIds = InstalledAddonRepository.Instance.All().Where(PlayerPrefsHelper.IsEnabled).Select(x => x.ResourceId).ToList();
+                    var enabledModIds = InstalledAddonRepository.Instance.All().Where(manifest => PlayerPrefsHelper.CanBeEnabledOrDisabled(manifest) && PlayerPrefsHelper.IsEnabled(manifest)).Select(manifest => manifest.ResourceId).ToList();
                     return enabledModIds;
                 case EnabledOptions.NotEnabled:
-                    var notEnabledModIds = InstalledAddonRepository.Instance.All().Where(manifest => !PlayerPrefsHelper.IsEnabled(manifest)).Select(manifest => manifest.ResourceId).ToList();
+                    var notEnabledModIds = InstalledAddonRepository.Instance.All().Where(manifest => PlayerPrefsHelper.CanBeEnabledOrDisabled(manifest) && !PlayerPrefsHelper.IsEnabled(manifest)).Select(manifest => manifest.ResourceId).ToList();
                     return notEnabledModIds;
                 default:
                     throw new ArgumentOutOfRangeException($"Value '{enabledOptions}' not a valid {nameof(EnabledOptions)}.");

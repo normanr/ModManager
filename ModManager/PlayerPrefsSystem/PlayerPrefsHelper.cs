@@ -50,12 +50,20 @@ namespace ModManager.PlayerPrefsSystem
             return true;
         }
 
+        public static bool CanBeEnabledOrDisabled(ModManagerManifest modManagerManifest)
+        {
+            if (modManagerManifest.RootPath == Paths.Maps)
+                return false;
+
+            return TryLoadMod(modManagerManifest, out _);
+        }
+
         public static bool CanBeEnabledOrDisabled(Mod mod)
         {
             if (!InstalledAddonRepository.Instance.TryGet(mod.Id, out var modManagerManifest))
                 return false;
 
-            return TryLoadMod(modManagerManifest, out _);
+            return CanBeEnabledOrDisabled(modManagerManifest);
         }
 
         public static ModPlayerPrefs? GetPlayerPrefs(uint modId)
