@@ -1,6 +1,6 @@
 using Bindito.Core;
 
-namespace ModManagerUI.StaticInstanceSystem
+namespace ModManager.StaticInstanceSystem
 {
     [Context("Bootstrapper")]
     public class BootstrapperModManagerConfigurator : Configurator

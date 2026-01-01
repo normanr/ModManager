@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Modio.Models;
 using ModManager.AddonSystem;
-using Timberborn.Modding;
+using ModManager.PlayerPrefsSystem;
 using UnityEngine;
-using Mod = Modio.Models.Mod;
 
 namespace ModManagerUI
 {
@@ -52,13 +51,9 @@ namespace ModManagerUI
             modCard?.ModActionStarted();
             try
             {
-                if (InstalledAddonRepository.Instance.TryGet(modId, out var modManagerManifest))
+                if (PlayerPrefsHelper.TrySetEnabled(modId, newState))
                 {
-                    if (ModHelper.TryLoadMod(modManagerManifest, out var timberbornMod))
-                    {
-                        ModPlayerPrefsHelper.ToggleMod(newState, timberbornMod);
-                        ModManagerPanel.ModsWereChanged = true;
-                    }
+                    ModManagerPanel.ModsWereChanged = true;
                 }
             }
             catch (AddonException ex)
@@ -66,18 +61,6 @@ namespace ModManagerUI
                 Debug.LogWarning(ex.Message);
             }
             modCard?.ModActionStopped();
-        }
-
-        public static void RestoreEnabledState(ModManagerManifest modManagerManifest, KeyValuePair<string, int>? previousState)
-        {
-            if (previousState == null)
-                return;
-            if (ModHelper.TryLoadMod(modManagerManifest, out var timberbornMod))
-            {
-                string modEnabledKey = ModPlayerPrefsHelper.GetModEnabledKey(timberbornMod);
-                PlayerPrefs.SetInt(modEnabledKey, previousState.Value.Value);
-                PlayerPrefs.DeleteKey(previousState.Value.Key);
-            }
         }
     }
 }

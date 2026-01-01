@@ -6,6 +6,7 @@ using ModManager.AddonSystem;
 using ModManager.ExtractorSystem;
 using ModManager.MapSystem;
 using ModManager.PersistenceSystem;
+using ModManager.PlayerPrefsSystem;
 using Mod = Modio.Models.Mod;
 
 namespace ModManager.ModSystem
@@ -58,6 +59,7 @@ namespace ModManager.ModSystem
         {
             if (!mod.Tags.Any(x => x.Name == "Mod"))
                 return false;
+            var playerPrefs = PlayerPrefsHelper.GetPlayerPrefs(mod.Id);
             mod.Modfile = file;
             var installLocation = _addonExtractorService.Extract(mod, zipLocation);
             var manifest = new ModManagerManifest(installLocation, mod, mod.Modfile);
@@ -66,6 +68,7 @@ namespace ModManager.ModSystem
 
             _installedAddonRepository.Remove(mod.Id);
             _installedAddonRepository.Add(manifest);
+            PlayerPrefsHelper.RestorePlayerPrefs(manifest, playerPrefs);
 
             return true;
         }

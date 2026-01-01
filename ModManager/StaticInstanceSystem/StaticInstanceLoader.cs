@@ -1,6 +1,6 @@
 using Timberborn.Modding;
 
-namespace ModManagerUI.StaticInstanceSystem
+namespace ModManager.StaticInstanceSystem
 {
     public class StaticInstanceLoader
     {

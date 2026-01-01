@@ -1,7 +1,8 @@
 ﻿using System;
+using Modio.Models;
 using ModManager.ModIoSystem;
+using ModManager.PlayerPrefsSystem;
 using UnityEngine.UIElements;
-using Mod = Modio.Models.Mod;
 
 namespace ModManagerUI.UIComponents.ModCard
 {
@@ -36,8 +37,8 @@ namespace ModManagerUI.UIComponents.ModCard
                 }
                 else
                 {
-                    _valueGetter = () => EnabledHelper.IsEnabled(_mod);
-                    _enabledGetter = () => EnabledHelper.CanBeEnabledOrDisabled(_mod) && ModManagerUI.ModManagerPanel.InstalledAddonRepository.Has(_mod.Id);
+                    _valueGetter = () => PlayerPrefsHelper.IsEnabled(_mod);
+                    _enabledGetter = () => PlayerPrefsHelper.CanBeEnabledOrDisabled(_mod) && ModManagerUI.ModManagerPanel.InstalledAddonRepository.Has(_mod.Id);
                     _visibilityGetter = _mod.IsInstalled;
                 }
                 _initialized = true;
