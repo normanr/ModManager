@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using ModManager.AddonSystem;
 using ModManager.StaticInstanceSystem;
@@ -12,8 +11,13 @@ namespace ModManager.PlayerPrefsSystem
 {
     public static class PlayerPrefsHelper
     {
-        private static bool TryLoadMod(ModManagerManifest modManagerManifest, out TimberbornMod timberbornMod)
+        private static bool TryLoadMod(ModManagerManifest modManagerManifest, out TimberbornMod? timberbornMod)
         {
+            if (modManagerManifest.RootPath == Paths.Maps)
+            {
+                timberbornMod = null;
+                return false;
+            }
             var modDirectory = new ModDirectory(new DirectoryInfo(modManagerManifest.RootPath), true, "Local", GameVersions.CurrentVersion, false);
             if (ModRepository.TryGetModDirectory(modDirectory, out var versionedModDirectory))
             {
