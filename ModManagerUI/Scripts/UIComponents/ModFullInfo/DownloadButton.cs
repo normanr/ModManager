@@ -34,7 +34,8 @@ namespace ModManagerUI.UIComponents.ModFullInfo
         private async void Download()
         {
             await InstallController.DownloadAndExtract(_mod, _modFullInfoController.CurrentFile);
-            Refresh();
+            await UpdateableModRegistry.IndexUpdatableMods();
+            _modFullInfoController.Refresh();
         }
 
         public void Refresh()

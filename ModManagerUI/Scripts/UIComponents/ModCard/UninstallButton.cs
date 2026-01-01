@@ -17,7 +17,7 @@ namespace ModManagerUI.UIComponents.ModCard
 
         public void Initialize()
         {
-            _root.clicked += () => InstallController.Uninstall(_mod);
+            _root.clicked += OnClick; 
             Refresh();
         }
 
@@ -25,6 +25,11 @@ namespace ModManagerUI.UIComponents.ModCard
         {
             _root.visible = IsVisible();
             _root.SetEnabled(IsEnabled());
+        }
+        private async void OnClick()
+        {
+            InstallController.Uninstall(_mod);
+            await UpdateableModRegistry.IndexUpdatableMods();
         }
 
         private bool IsVisible()

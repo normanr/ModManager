@@ -90,10 +90,6 @@ namespace ModManagerUI
             item.Q<Label>("Description").text = string.IsNullOrEmpty(mod.DescriptionPlaintext)
                 ? mod.Summary
                 : mod.DescriptionPlaintext;
-            var installedVersion = item.Q<Label>("InstalledVersion");
-            installedVersion.text = _installedAddonRepository.Has(mod.Id)
-                ? _installedAddonRepository.Get(mod.Id).Version
-                : "-";
             item.Q<Label>("LiveVersion").text = mod.Modfile?.Version ?? "";
 
             _downloadButton = DownloadButton.Create(item.Q<Button>("Download"), mod, this);
@@ -108,6 +104,12 @@ namespace ModManagerUI
 
         public void Refresh()
         {
+            if (_currentMod == null)
+                return;
+            var installedVersion = _item.Q<Label>("InstalledVersion");
+            installedVersion.text = _installedAddonRepository.Has(_currentMod.Id)
+                ? _installedAddonRepository.Get(_currentMod.Id).Version
+                : "-";
             _downloadButton?.Refresh();
         }
         

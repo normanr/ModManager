@@ -67,6 +67,7 @@ namespace ModManagerUI.UIComponents.ModCard
         {
             Disable();
             await InstallController.DownloadAndExtractWithDependencies(_mod);
+            await UpdateableModRegistry.IndexUpdatableMods();
         }
 
         private string TextGetter()

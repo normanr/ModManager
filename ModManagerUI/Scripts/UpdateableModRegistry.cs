@@ -26,6 +26,8 @@ namespace ModManagerUI
         {
             try
             {
+                if (UpdateAvailable != null)
+                    return;
                 Task.Run(IndexUpdatableMods);
             }
             catch (OperationCanceledException ex)
@@ -40,10 +42,8 @@ namespace ModManagerUI
             }
         }
         
-        private static async Task IndexUpdatableMods()
+        public static async Task IndexUpdatableMods()
         {
-            if (UpdateAvailable != null)
-                return;
             UpdateAvailable = new Dictionary<uint, File>();
             var installedMods = InstalledAddonRepository.Instance.All().ToList();
             foreach (var manifest in installedMods)
