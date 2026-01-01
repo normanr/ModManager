@@ -16,8 +16,8 @@ namespace ModManager.MapSystem
         {
         }
         
-        public MapModManagerManifest(string installLocation, Mod mod, File file, List<string> mapFleNames) 
-            : base(installLocation, mod, file)
+        public MapModManagerManifest(string installLocation, Mod mod, List<string> mapFleNames)
+            : base(installLocation, mod)
         {
             MapFileNames = mapFleNames;
         }

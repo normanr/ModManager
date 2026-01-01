@@ -53,7 +53,7 @@ namespace ModManager.MapSystem
 
             var installLocation = _addonExtractorService.Extract(mod, zipLocation);
             
-            var manifest = new MapModManagerManifest(installLocation, mod, mod.Modfile, timberFileNames);
+            var manifest = new MapModManagerManifest(installLocation, mod, timberFileNames);
             var manifests = _mapManifestFinder.Find()
                 .Select(a => (MapModManagerManifest)a)
                 .ToList();
@@ -92,7 +92,7 @@ namespace ModManager.MapSystem
             return true;
         }
 
-        public bool ChangeVersion(Mod mod, File file, string zipLocation)
+        public bool ChangeVersion(Mod mod, string zipLocation)
         {
             if (!mod.Tags.Any(x => x.Name == "Map"))
             {
@@ -119,7 +119,7 @@ namespace ModManager.MapSystem
 
             var installLocation = _addonExtractorService.Extract(mod, zipLocation);
          
-            var manifest = new MapModManagerManifest(installLocation, mod, mod.Modfile, timberFileNames);
+            var manifest = new MapModManagerManifest(installLocation, mod, timberFileNames);
             var manifests = _mapManifestFinder.Find()
                 .Where(a => a.ResourceId != mod.Id)
                 .Select(a => (MapModManagerManifest)a)

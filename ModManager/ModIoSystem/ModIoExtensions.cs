@@ -15,10 +15,5 @@ namespace ModManager.ModIoSystem
         {
             return InstalledAddonRepository.Instance.Has(dependency.ModId);
         }
-        
-        public static bool IsModInstalled(this File mod)
-        {
-            return InstalledAddonRepository.Instance.Has(mod.ModId);
-        }
     }
 }

@@ -12,12 +12,11 @@ namespace ModManager.AddonSystem
         {
         }
         
-        public ModManagerManifest(string installLocation, Mod mod, File file)
+        public ModManagerManifest(string installLocation, Mod mod)
         {
             RootPath = installLocation;
-            // FileId = file.Id;
             ResourceId = mod.Id;
-            Version = file.Version!;
+            Version = mod.Modfile!.Version;
         }
         
         public ModManagerManifest(
@@ -26,7 +25,6 @@ namespace ModManager.AddonSystem
             string version)
         {
             RootPath = installLocation;
-            // FileId = file.Id;
             ResourceId = mod.Id;
             Version = version;
         }
@@ -34,8 +32,6 @@ namespace ModManager.AddonSystem
         [JsonIgnore]
         public string RootPath { get; set; } = null!;
 
-        // public uint FileId { get; set; }
-        
         public uint ResourceId { get; set; }
         
         [JsonProperty(Required = Required.AllowNull)]

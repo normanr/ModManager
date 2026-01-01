@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Modio.Models;
 using ModManager.AddonSystem;
 using Timberborn.Modding;
 using Mod = Modio.Models.Mod;
@@ -48,11 +47,11 @@ namespace ModManager.AddonInstallerSystem
             throw new AddonInstallerException($"{modManagerManifest.ModName} could not be uninstalled by any installer");
         }
 
-        public void ChangeVersion(Mod mod, File file, string zipLocation)
+        public void ChangeVersion(Mod mod, string zipLocation)
         {
             foreach (var installer in _addonInstallers)
             {
-                if (installer.ChangeVersion(mod, file, zipLocation))
+                if (installer.ChangeVersion(mod, zipLocation))
                 {
                     _modRepository.Load();
                     

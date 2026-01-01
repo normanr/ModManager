@@ -29,7 +29,7 @@ namespace ModManager.ModSystem
             if (!mod.Tags.Any(x => x.Name == "Mod"))
                 return false;
             var installLocation = _addonExtractorService.Extract(mod, zipLocation);
-            var manifest = new ModManagerManifest(installLocation, mod, mod.Modfile!);
+            var manifest = new ModManagerManifest(installLocation, mod);
             var modManifestPath = Path.Combine(installLocation, ModManagerManifest.FileName);
             _persistenceService.SaveObject(manifest, modManifestPath);
             _installedAddonRepository.Add(manifest);
@@ -55,14 +55,13 @@ namespace ModManager.ModSystem
             return true;
         }
 
-        public bool ChangeVersion(Mod mod, Modio.Models.File file, string zipLocation)
+        public bool ChangeVersion(Mod mod, string zipLocation)
         {
             if (!mod.Tags.Any(x => x.Name == "Mod"))
                 return false;
             var playerPrefs = PlayerPrefsHelper.GetPlayerPrefs(mod.Id);
-            mod.Modfile = file;
             var installLocation = _addonExtractorService.Extract(mod, zipLocation);
-            var manifest = new ModManagerManifest(installLocation, mod, mod.Modfile);
+            var manifest = new ModManagerManifest(installLocation, mod);
             var modManifestPath = Path.Combine(installLocation, ModManagerManifest.FileName);
             _persistenceService.SaveObject(manifest, modManifestPath);
 

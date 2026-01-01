@@ -51,18 +51,18 @@ namespace ModManager.AddonSystem
             _addonInstallerService.Uninstall(manifest);
         }
 
-        public void ChangeVersion(Mod mod, File file, string zipLocation)
+        public void ChangeVersion(Mod mod, string zipLocation)
         {
             if (!mod.IsInstalled())
             {
                 throw new AddonException($"Cannot change version of {mod.Name}. Mod is not installed.");
             }
-            if (_installedAddonRepository.Get(mod.Id).Version == file.Version)
+            if (_installedAddonRepository.Get(mod.Id).Version == mod.Modfile!.Version)
             {
-                throw new AddonException($"{mod.Name} is already installed with version {file.Version}.");
+                throw new AddonException($"{mod.Name} is already installed with version {mod.Modfile!.Version}.");
             }
 
-            _addonInstallerService.ChangeVersion(mod, file, zipLocation);
+            _addonInstallerService.ChangeVersion(mod, zipLocation);
         }
         
         public IAsyncEnumerable<Dependency> GetDependencies(Mod mod)
@@ -93,26 +93,24 @@ namespace ModManager.AddonSystem
             }
         }
 
-        public async Task<(string location, Mod Mod)> Download(Mod mod, File file)
+        public async Task<(string location, Mod Mod)> Download(Mod mod)
         {
-            if (file.IsModInstalled())
+            if (mod.IsInstalled())
             {
                 if (!_installedAddonRepository.TryGet(mod.Id, out var manifest))
                 {
                     throw new AddonException($"Couldn't find installed mod'd manifest.");
                 }
-                if (manifest.Version == file.Version)
+                if (manifest.Version == mod.Modfile!.Version)
                 {
-                    throw new AddonException($"Mod {mod.Name} is already installed with version {file.Version}.");
+                    throw new AddonException($"Mod {mod.Name} is already installed with version {mod.Modfile!.Version}.");
                 }
             }
 
-            mod.Modfile = file;
-
             Directory.CreateDirectory($"{Paths.ModManager.Temp}");
-            var tempZipLocation = Path.Combine(Paths.ModManager.Temp, $"{mod.Id}_{file.Version}.zip");
+            var tempZipLocation = Path.Combine(Paths.ModManager.Temp, $"{mod.Id}_{mod.Modfile!.Version}.zip");
 
-            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, file.Id, new FileInfo(tempZipLocation));
+            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, new FileInfo(tempZipLocation));
             (string, Mod) result = new(tempZipLocation, mod);
             return result;
         }

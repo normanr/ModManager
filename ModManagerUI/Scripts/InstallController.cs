@@ -19,10 +19,11 @@ namespace ModManagerUI
         {
             var modCard = ModCardRegistry.Get(mod);
             modCard?.ModActionStarted();
+            var liveModfile = mod.Modfile;
             try
             {
-                file ??= mod.Modfile!;
-                var downloadedMod = await AddonService.Download(mod, file);
+                if (file != null) mod.Modfile = file;
+                var downloadedMod = await AddonService.Download(mod);
                 TryInstall(downloadedMod);
             }
             catch (MapException ex)
@@ -36,6 +37,10 @@ namespace ModManagerUI
             catch (IOException ex)
             {
                 Debug.LogError($"{ex.Message}");
+            }
+            finally
+            {
+                mod.Modfile = liveModfile;
             }
             modCard?.ModActionStopped();
         }
@@ -79,9 +84,9 @@ namespace ModManagerUI
         {
             try
             {
-                if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out var manifest) && manifest.Version != mod.Mod.Modfile.Version)
+                if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out var manifest) && manifest.Version != mod.Mod.Modfile!.Version)
                 {
-                    AddonService.ChangeVersion(mod.Mod, mod.Mod.Modfile, mod.location);
+                    AddonService.ChangeVersion(mod.Mod, mod.location);
                 }
                 else
                 {

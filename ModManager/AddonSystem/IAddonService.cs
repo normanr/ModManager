@@ -11,7 +11,7 @@
 //
 //         void Uninstall(uint modId);
 //
-//         void ChangeVersion(Mod mod, File file, string zipLocation);
+//         void ChangeVersion(Mod mod, string zipLocation);
 //
 //         IAsyncEnumerable<Dependency> GetDependencies(Mod mod);
 //
