@@ -41,6 +41,9 @@
         <Reference Include="$(TimberbornPath)Timberborn_Data\Managed\Bindito.*.dll">
             <DestinationSubDirectory>libs/</DestinationSubDirectory>
         </Reference>
+        <Reference Include="$(TimberbornPath)Timberborn_Data\Managed\Mono.Security.dll">
+            <DestinationSubDirectory>libs/</DestinationSubDirectory>
+        </Reference>
         <Reference Include="$(TimberbornPath)Timberborn_Data\Managed\UnityEngine.*.dll">
             <DestinationSubDirectory>libs/</DestinationSubDirectory>
         </Reference>
