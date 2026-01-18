@@ -10,6 +10,8 @@ using ModManager.AddonInstallerSystem;
 using ModManager.VersionSystem;
 using File = Modio.Models.File;
 using Mod = Modio.Models.Mod;
+using Mono.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace ModManager.AddonSystem
 {
@@ -110,7 +112,18 @@ namespace ModManager.AddonSystem
             Directory.CreateDirectory($"{Paths.ModManager.Temp}");
             var tempZipLocation = Path.Combine(Paths.ModManager.Temp, $"{mod.Id}_{mod.Modfile!.Version}.zip");
 
-            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, new FileInfo(tempZipLocation));
+            using var stream = new FileInfo(tempZipLocation).Create();
+            using var md5sum = MD5.Create();
+            using var cstream = new CryptoStream(stream, md5sum, CryptoStreamMode.Write);
+
+            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, cstream);
+            cstream.FlushFinalBlock();
+
+            var wantMd5 = CryptoConvert.FromHex(mod.Modfile!.FileHash!.Md5);
+            if (!CryptographicOperations.FixedTimeEquals(wantMd5, md5sum.Hash)) {
+                throw new AddonException($"Mod {mod.Name} download hash mismatch for version {mod.Modfile!.Version}.");
+            }
+
             (string, Mod) result = new(tempZipLocation, mod);
             return result;
         }
