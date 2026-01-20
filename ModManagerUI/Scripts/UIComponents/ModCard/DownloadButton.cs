@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Modio.Models;
 using ModManager.AddonSystem;
 using ModManager.VersionSystem;
 using ModManagerUI.EventSystem;
 using Timberborn.SingletonSystem;
+using UnityEngine;
 using UnityEngine.UIElements;
 using EventBus = ModManagerUI.EventSystem.EventBus;
 
@@ -66,7 +68,14 @@ namespace ModManagerUI.UIComponents.ModCard
         private async void OnClick()
         {
             Disable();
-            await InstallController.DownloadAndExtractWithDependencies(_mod);
+            try
+            {
+                await InstallController.DownloadAndExtractWithDependencies(_mod);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error occurred while installing mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
             await UpdateableModRegistry.IndexUpdatableMods();
         }
 

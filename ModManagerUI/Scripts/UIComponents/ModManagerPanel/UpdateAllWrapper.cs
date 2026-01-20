@@ -77,17 +77,9 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
                     await InstallController.DownloadAndExtract(mod, updatableMod.Value);
                     _updateAvailableGetter().Remove(updatableMod.Key);
                 }
-                catch (MapException ex)
+                catch (Exception ex)
                 {
-                    Debug.LogWarning(ex.Message);
-                }
-                catch (AddonException ex)
-                {
-                    Debug.LogWarning(ex.Message);
-                }
-                catch (IOException ex)
-                {
-                    Debug.LogError($"{ex.Message}");
+                    Debug.LogError($"Error occurred while installing mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
                 }
             }
             

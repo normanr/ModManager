@@ -124,10 +124,33 @@ namespace ModManagerUI
         {
             if (_currentMod == null)
                 return;
-            var versionList = await ModIoModFilesRegistry.GetDescAsync(_currentMod.Id);
-            var dropdownProvider = new VersionDropdownProvider(this, versionList.ToList());
-            _dropdownOptionsSetter.SetItems(dropdown, dropdownProvider);
-            _versionsDropdown?.RefreshContent();
+            IEnumerable<File> versionList;
+            try
+            {
+                versionList = await ModIoModFilesRegistry.GetDescAsync(_currentMod.Id);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error occurred while fetching versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                versionList = new List<File>();
+            }
+            try
+            {
+                var dropdownProvider = new VersionDropdownProvider(this, versionList.ToList());
+                _dropdownOptionsSetter.SetItems(dropdown, dropdownProvider);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error occurred while applying versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
+            try
+            {
+                _versionsDropdown?.RefreshContent();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error occurred while refreshing versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
         }
 
         private async void LoadLogo(Mod mod, Image root)
@@ -141,9 +164,9 @@ namespace ModManagerUI
                 texture.LoadImage(byteArray);
                 root.image = texture;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                Debug.LogWarning($"Error occured while fetching image: {ex.Message}");
+                Debug.LogWarning($"Error occurred while fetching logo: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 
@@ -198,9 +221,9 @@ namespace ModManagerUI
                 }
                 root.Add(imageElement);
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                Debug.LogWarning($"Error occured while fetching image: {ex.Message}");
+                Debug.LogWarning($"Error occurred while fetching image: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 

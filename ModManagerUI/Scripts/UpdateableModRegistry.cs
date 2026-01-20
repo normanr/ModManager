@@ -32,7 +32,7 @@ namespace ModManagerUI
             }
             catch (OperationCanceledException ex)
             {
-                Debug.Log($"Async operation was cancelled: {ex.Message}");
+                Debug.Log($"Async operation was cancelled: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
             catch (Exception exception)
             {

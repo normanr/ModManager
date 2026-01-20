@@ -74,7 +74,7 @@
 	</PropertyGroup>
 
 	<Target Name="AutomaticCopyToTimberborn" BeforeTargets="AfterBuild">
-		<Message Text="### Copy TimberApi common ###" Importance="high" />
+		<Message Text="### Copy ModManagerUI ###" Importance="high" />
 		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManagerUI.pdb" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Microsoft.Bcl.AsyncInterfaces.dll" DestinationFolder="$(ModManagerPath)\libs" />

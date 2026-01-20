@@ -1,7 +1,9 @@
-﻿using Modio.Models;
+﻿using System;
+using Modio.Models;
 using ModManager.AddonSystem;
 using ModManager.ModIoSystem;
 using ModManager.VersionSystem;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ModManagerUI.UIComponents.ModFullInfo
@@ -33,7 +35,14 @@ namespace ModManagerUI.UIComponents.ModFullInfo
 
         private async void Download()
         {
-            await InstallController.DownloadAndExtract(_mod, _modFullInfoController.CurrentFile);
+            try
+            {
+                await InstallController.DownloadAndExtract(_mod, _modFullInfoController.CurrentFile);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error occurred while installing mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
             await UpdateableModRegistry.IndexUpdatableMods();
             _modFullInfoController.Refresh();
         }

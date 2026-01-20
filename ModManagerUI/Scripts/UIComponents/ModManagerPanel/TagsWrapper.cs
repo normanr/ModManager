@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using Modio.Models;
 using ModManager.ModIoSystem;
 using ModManagerUI.EventSystem;
 using Timberborn.SingletonSystem;
+using UnityEngine;
 using UnityEngine.UIElements;
 using EventBus = ModManagerUI.EventSystem.EventBus;
 
@@ -31,8 +33,15 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         private async void ShowTags()
         {
             var getTagsTask = ModIo.GameTagsClient.Get();
-            OnTagsRetrieved(await getTagsTask);
-            EventBus.Instance.Unregister(this);
+            try
+            {
+                OnTagsRetrieved(await getTagsTask);
+                EventBus.Instance.Unregister(this);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error occurred while fetching tags: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
         }
         
         private void OnTagsRetrieved(IEnumerable<TagOption> tags)

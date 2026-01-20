@@ -1,5 +1,7 @@
-﻿using Modio.Models;
+﻿using System;
+using Modio.Models;
 using ModManager.ModIoSystem;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ModManagerUI.UIComponents.ModCard
@@ -28,7 +30,14 @@ namespace ModManagerUI.UIComponents.ModCard
         }
         private async void OnClick()
         {
-            InstallController.Uninstall(_mod);
+            try
+            {
+                InstallController.Uninstall(_mod);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error occurred while uninstalling mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+            }
             await UpdateableModRegistry.IndexUpdatableMods();
         }
 

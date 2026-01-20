@@ -242,7 +242,7 @@ namespace ModManagerUI
             }
             catch (OperationCanceledException ex)
             {
-                Debug.LogWarning($"Async operation was cancelled: {ex.Message}");
+                Debug.LogWarning($"Async operation was cancelled: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
             catch (Exception e)
             {
@@ -265,7 +265,15 @@ namespace ModManagerUI
                 var filter = FilterController.Create(_search, _tagsWrapper.Root);
                 _getModsTask = ModIo.ModsClient.Search(filter).ToPagedEnumerable();
             }
-            EventBus.Instance.PostEvent(new ModsRetrievedEvent(await _getModsTask.FirstAsync(token), token));
+            try
+            {
+                EventBus.Instance.PostEvent(new ModsRetrievedEvent(await _getModsTask.FirstAsync(token), token));
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error occurred while fetching mods: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                ShowError(ex);
+            }
         }
         
         private async void Refresh()
@@ -278,7 +286,7 @@ namespace ModManagerUI
             }
             catch (OperationCanceledException ex)
             {
-                Debug.Log($"Async operation was cancelled: {ex.Message}");
+                Debug.Log($"Async operation was cancelled: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 

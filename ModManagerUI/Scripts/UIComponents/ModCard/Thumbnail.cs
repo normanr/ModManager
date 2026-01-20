@@ -33,9 +33,9 @@ namespace ModManagerUI.UIComponents.ModCard
                 texture.LoadImage(bytes);
                 _root.image = texture;
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException ex)
             {
-                Debug.LogWarning($"Error occured while fetching image: {exception.Message}");
+                Debug.LogWarning($"Error occurred while fetching image: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
     }
