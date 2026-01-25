@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using Modio;
 
 namespace ModManager.ModIoSystem
@@ -29,7 +31,16 @@ namespace ModManager.ModIoSystem
 
         public static void InitializeClient(string apiKey)
         {
-            Client = new Client(new Credentials(apiKey));
+            Client = new Client(
+                Client.ModioApiUrl,
+                new Credentials(apiKey),
+                new HttpClient(new HttpClientHandler()
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    Proxy = WebProxy.GetDefaultProxy()
+#pragma warning restore CS0618 // Type or member is obsolete
+                })
+            );
         }
     }
 }
