@@ -35,6 +35,15 @@ namespace ModManagerUI.UIComponents.ModCard
             Refresh();
         }
         
+        [OnEvent]
+        public void OnModDownloadProgress(ModDownloadProgressEvent modDownloadProgressEvent)
+        {
+            if (modDownloadProgressEvent.ModId == _mod.Id)
+            {
+                _root.text = $"{modDownloadProgressEvent.Progress:P0}";
+            }
+        }
+
         public void Enable()
         {
             _root.SetEnabled(true);

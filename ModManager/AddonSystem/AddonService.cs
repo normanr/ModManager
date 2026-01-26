@@ -92,7 +92,7 @@ namespace ModManager.AddonSystem
             }
         }
 
-        public async Task<(string location, Mod Mod)> Download(Mod mod)
+        public async Task<(string location, Mod Mod)> Download(Mod mod, Action<float> progress)
         {
             if (mod.IsInstalled())
             {
@@ -109,11 +109,20 @@ namespace ModManager.AddonSystem
             Directory.CreateDirectory($"{Paths.ModManager.Temp}");
             var tempZipLocation = Path.Combine(Paths.ModManager.Temp, $"{mod.Id}_{mod.Modfile!.Version}.zip");
 
+            var length = mod.Modfile!.FileSize;
+            var position = 0;
+            var streamProgress = new Progress<int>((count) =>
+            {
+                position += count;
+                progress((float)position / length);
+            });
+
             using var stream = new FileInfo(tempZipLocation).Create();
             using var md5sum = MD5.Create();
             using var cstream = new CryptoStream(stream, md5sum, CryptoStreamMode.Write);
+            using var pstream = new ProgressStream.ProgressStream(cstream, writeProgress: streamProgress);
 
-            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, cstream);
+            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, pstream);
             cstream.FlushFinalBlock();
 
             var wantMd5 = CryptoConvert.FromHex(mod.Modfile!.FileHash!.Md5);

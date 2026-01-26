@@ -3,6 +3,7 @@ using Modio.Models;
 using ModManager;
 using ModManager.AddonSystem;
 using ModManager.ModIoSystem;
+using ModManagerUI.EventSystem;
 using File = Modio.Models.File;
 
 namespace ModManagerUI
@@ -19,7 +20,10 @@ namespace ModManagerUI
             try
             {
                 if (file != null) mod.Modfile = file;
-                var downloadedMod = await AddonService!.Download(mod);
+                var downloadedMod = await AddonService!.Download(mod, (progress) =>
+                {
+                    EventBus.Instance.PostEvent(new ModDownloadProgressEvent(mod.Id, progress));
+                });
                 TryInstall(downloadedMod);
             }
             finally

@@ -3,8 +3,11 @@ using Modio.Models;
 using ModManager.AddonSystem;
 using ModManager.ModIoSystem;
 using ModManager.VersionSystem;
+using ModManagerUI.EventSystem;
+using Timberborn.SingletonSystem;
 using UnityEngine;
 using UnityEngine.UIElements;
+using EventBus = ModManagerUI.EventSystem.EventBus;
 
 namespace ModManagerUI.UIComponents.ModFullInfo
 {
@@ -24,6 +27,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
         public static DownloadButton Create(Button root, Mod mod, ModFullInfoController modFullInfoController)
         {
             var downloadButton = new DownloadButton(root, mod, modFullInfoController);
+            EventBus.Instance.Register(downloadButton);
             root.clicked += () =>
             {
                 root.SetEnabled(false);
@@ -45,6 +49,15 @@ namespace ModManagerUI.UIComponents.ModFullInfo
             }
             await UpdateableModRegistry.IndexUpdatableMods();
             _modFullInfoController.Refresh();
+        }
+
+        [OnEvent]
+        public void OnModDownloadProgress(ModDownloadProgressEvent modDownloadProgressEvent)
+        {
+            if (modDownloadProgressEvent.ModId == _mod.Id)
+            {
+                _root.text = $"{modDownloadProgressEvent.Progress:P0}";
+            }
         }
 
         public void Refresh()

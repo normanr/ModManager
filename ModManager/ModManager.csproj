@@ -30,6 +30,10 @@
             <HintPath>libs\Modio.dll</HintPath>
             <DestinationSubDirectory>libs/</DestinationSubDirectory>
         </Reference>
+        <Reference Include="ProgressStream">
+            <HintPath>libs\ProgressStream.dll</HintPath>
+            <DestinationSubDirectory>libs/</DestinationSubDirectory>
+        </Reference>
     </ItemGroup>
 
     <!--    Import dll's from Timberborn's symlink in solution folder-->
@@ -63,6 +67,7 @@
         <Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManager.pdb" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Microsoft.Bcl.AsyncInterfaces.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
+		<Copy SourceFiles="$(ProjectDir)\libs\ProgressStream.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Json.dll" DestinationFolder="$(ModManagerPath)\libs" />
         <Exec Command='"$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steam.exe" -applaunch 1062090'/>
 	</Target>
