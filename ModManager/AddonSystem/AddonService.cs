@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using ModManager.AddonInstallerSystem;
 using ModManager.VersionSystem;
@@ -23,8 +22,6 @@ namespace ModManager.AddonSystem
         private readonly AddonInstallerService _addonInstallerService;
 
         private readonly Dictionary<Uri, byte[]> _imageCache = new();
-
-        private readonly HttpClient _httpClient = new();
 
         public AddonService(InstalledAddonRepository installedAddonRepository, AddonInstallerService addonInstallerService)
         {
@@ -135,7 +132,7 @@ namespace ModManager.AddonSystem
                 return imageBytes;
             }
 
-            var byteArray = await _httpClient.GetByteArrayAsync(uri);
+            var byteArray = await ModIo.HttpClient.GetByteArrayAsync(uri);
             _imageCache[uri] = byteArray;
             return byteArray;
         }

@@ -23,7 +23,7 @@ namespace ModManager.StartupSystem
 
             options(modManagerOptions);
 
-            ModIo.InitializeClient(apiKey);
+            ModIo.InitializeClient(apiKey, modManagerOptions.GameId);
 
             IsLoaded = true;
 

@@ -7,6 +7,22 @@ namespace ModManager.ModIoSystem
 {
     public class ModIo
     {
+        private static HttpClient _httpClient = null!;
+
+        internal static HttpClient HttpClient
+        {
+            get
+            {
+                if (_httpClient == null)
+                {
+                    throw new NullReferenceException("Tried to access ModIo.HttpClient before startup has run.");
+                }
+
+                return _httpClient;
+            }
+            private set => _httpClient = value;
+        }
+
         private static Client _client = null!;
 
         public static Client Client
@@ -29,18 +45,18 @@ namespace ModManager.ModIoSystem
         
         public static GameTagsClient GameTagsClient => GameClient.Tags;
 
-        public static void InitializeClient(string apiKey)
+        public static void InitializeClient(string apiKey, uint gameId)
         {
-            Client = new Client(
-                Client.ModioApiUrl,
-                new Credentials(apiKey),
-                new HttpClient(new HttpClientHandler()
-                {
+            HttpClient = new(new HttpClientHandler()
+            {
 #pragma warning disable CS0618 // Type or member is obsolete
-                    Proxy = WebProxy.GetDefaultProxy()
+                Proxy = WebProxy.GetDefaultProxy()
 #pragma warning restore CS0618 // Type or member is obsolete
-                })
-            );
+            });
+            Client = Client.GetBuilder(apiKey)
+                .WithGameHost(gameId)
+                .WithHttpClient(HttpClient)
+                .Build();
         }
     }
 }
