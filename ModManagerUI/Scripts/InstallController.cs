@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Text.Json;
 using Modio.Models;
 using ModManager;
 using ModManager.AddonSystem;
@@ -16,10 +17,12 @@ namespace ModManagerUI
         {
             var modCard = ModCardRegistry.Get(mod);
             modCard?.ModActionStarted();
-            var liveModfile = mod.Modfile;
             try
             {
-                if (file != null) mod.Modfile = file;
+                if (file != null) {
+                    mod = JsonSerializer.Deserialize<Mod>(JsonSerializer.Serialize(mod))!;
+                    mod.Modfile = file;
+                }
                 var downloadedMod = await AddonService!.Download(mod, (progress) =>
                 {
                     EventBus.Instance.PostEvent(new ModDownloadProgressEvent(mod.Id, progress));
@@ -28,7 +31,6 @@ namespace ModManagerUI
             }
             finally
             {
-                mod.Modfile = liveModfile;
                 modCard?.ModActionStopped();
             }
         }
