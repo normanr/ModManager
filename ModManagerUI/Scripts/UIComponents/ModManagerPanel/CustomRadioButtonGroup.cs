@@ -37,7 +37,6 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
 
             var radioButtonGroup = new RadioButtonGroup();
             radioButtonGroup.name = $"{_tagOption.Name}TagRadioButtonGroup";
-            radioButtonGroup.value = -1;
             radioButtonGroup.AddToClassList("mods-box__tags");
             
             radioButtonGroup.choices = formatTags ? _tagOption.Tags.Select(FormatTag) : _tagOption.Tags;
@@ -55,12 +54,12 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
 
         public bool HasTagSelected()
         {
-            return RadioButtonGroup!.value != -1;
+            return _tagsLastValue != -1;
         }
 
         public string GetActiveTag()
         {
-            return TagOptions[RadioButtonGroup!.value];
+            return TagOptions[_tagsLastValue];
         }
 
         private static string FormatTag(string text)
