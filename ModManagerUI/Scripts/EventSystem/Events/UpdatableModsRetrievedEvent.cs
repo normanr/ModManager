@@ -5,9 +5,9 @@ namespace ModManagerUI.EventSystem
 {
     public class UpdatableModsRetrievedEvent
     {
-        public Dictionary<uint, File> UpdatableMods { get; }
+        public IDictionary<uint, File> UpdatableMods { get; }
         
-        public UpdatableModsRetrievedEvent(Dictionary<uint, File> updatableMods)
+        public UpdatableModsRetrievedEvent(IDictionary<uint, File> updatableMods)
         {
             UpdatableMods = updatableMods;
         }

@@ -19,14 +19,14 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
     public class UpdateAllWrapper
     {
         private readonly VisualElement _root;
-        private readonly Func<Dictionary<uint, File>> _updateAvailableGetter;
+        private readonly Func<IDictionary<uint, File>> _updateAvailableGetter;
         
         private readonly Label _updateAllLabel;
         private readonly Button _updateAllButton;
         
         private UpdateAllWrapper(
             VisualElement root, 
-            Func<Dictionary<uint, File>> updateAvailableGetter, 
+            Func<IDictionary<uint, File>> updateAvailableGetter,
             Label updateAllLabel, 
             Button updateAllButton)
         {
@@ -36,7 +36,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
             _updateAllButton = updateAllButton;
         }
 
-        public static UpdateAllWrapper Create(VisualElement root, Func<Dictionary<uint, File>> updateAvailableGetter)
+        public static UpdateAllWrapper Create(VisualElement root, Func<IDictionary<uint, File>> updateAvailableGetter)
         {
             var updateAllLabel = root.Q<Label>("UpdateAllLabel");
             var updateAllButton = root.Q<Button>("UpdateAll");

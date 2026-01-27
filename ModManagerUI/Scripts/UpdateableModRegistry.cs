@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace ModManagerUI
 {
     public class UpdateableModRegistry : ILoadableSingleton
     {
-        public static Dictionary<uint, File>? UpdateAvailable { get; private set; }
+        public static IDictionary<uint, File>? UpdateAvailable { get; private set; }
 
         public void Load()
         {
@@ -44,7 +45,7 @@ namespace ModManagerUI
         
         public static async Task IndexUpdatableMods()
         {
-            UpdateAvailable = new Dictionary<uint, File>();
+            UpdateAvailable = new ConcurrentDictionary<uint, File>();
             var installedMods = InstalledAddonRepository.Instance.All().ToList();
             foreach (var manifest in installedMods)
             {
