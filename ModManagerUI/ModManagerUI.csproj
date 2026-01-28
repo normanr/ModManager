@@ -78,13 +78,8 @@
 		<Message Text="### Copy ModManagerUI ###" Importance="high" />
 		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManagerUI.pdb" DestinationFolder="$(ModManagerPath)" />
-		<Copy SourceFiles="$(ProjectDir)\libs\Microsoft.Bcl.AsyncInterfaces.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Buffers.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\System.Linq.Async.dll" DestinationFolder="$(ModManagerPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Numerics.Vectors.dll" DestinationFolder="$(ModManagerPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Encodings.Web.dll" DestinationFolder="$(ModManagerPath)\libs" />
-		<Copy SourceFiles="$(ProjectDir)\libs\System.Text.Json.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\manifest.json" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\thumbnail.jpg" DestinationFolder="$(ModManagerPath)\.." />
 		<Copy SourceFiles="$(ProjectDir)\workshop_data.json" DestinationFolder="$(ModManagerPath)\.." />
