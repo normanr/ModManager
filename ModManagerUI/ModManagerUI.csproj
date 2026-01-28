@@ -6,7 +6,11 @@
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	  <ReleaseVersion>MODMANAGER_VERSION</ReleaseVersion>
   </PropertyGroup>
-	
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<!--   Set to true if you want to use the live timberborn assemblies of the game, requires symlink     -->
 		<UseLocalTimberbornSource>true</UseLocalTimberbornSource>
@@ -77,7 +81,6 @@
 	<Target Name="AutomaticCopyToTimberborn" BeforeTargets="AfterBuild">
 		<Message Text="### Copy ModManagerUI ###" Importance="high" />
 		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
-		<Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManagerUI.pdb" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\System.Linq.Async.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\manifest.json" DestinationFolder="$(ModManagerPath)" />

@@ -7,6 +7,10 @@
         <ReleaseVersion>MODMANAGER_VERSION</ReleaseVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
 	<PropertyGroup>
         <!--   Set to true if you want to use the live timberborn assemblies of the game, requires symlink     -->
         <UseLocalTimberbornSource>true</UseLocalTimberbornSource>
@@ -62,7 +66,6 @@
 	<Target Name="AutomaticCopyToTimberborn" BeforeTargets="AfterBuild" Condition="$(CopyDllToPath)">
 		<Message Text="### Copy ModManager ###" Importance="high" />
 		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
-        <Copy SourceFiles="$(ProjectDir)\bin\Debug\netstandard2.1\ModManager.pdb" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\ProgressStream.dll" DestinationFolder="$(ModManagerPath)\libs" />
         <Exec Command='"$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steam.exe" -applaunch 1062090'/>
