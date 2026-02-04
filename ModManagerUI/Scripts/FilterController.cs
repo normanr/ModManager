@@ -19,7 +19,12 @@ namespace ModManagerUI
             var filter = SortingButtonsManager.GetFilter();
 
             if (search != null && !string.IsNullOrEmpty(search.value))
+            {
                 filter = filter.And(ModFilter.FullText.Eq(search.value));
+                filter = filter.And(ModFilter.Name.Like(search.value));
+                filter = filter.And(Filter.Custom("submitted_by_display_name", Operator.Like, search.value));
+                filter = filter.And(Filter.Custom("or_fields[]", Operator.Equal, "_q,name-lk,submitted_by_display_name-lk"));
+            }
 
             var tagsFilter = CreateTagsFilter(tagsWrapper);
             if (tagsFilter != null)
