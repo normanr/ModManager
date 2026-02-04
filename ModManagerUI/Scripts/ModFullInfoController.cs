@@ -131,7 +131,7 @@ namespace ModManagerUI
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while fetching versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while fetching versions for {_currentMod.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
                 versionList = new List<File>();
             }
             try
@@ -141,7 +141,7 @@ namespace ModManagerUI
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while applying versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while applying versions for {_currentMod.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
             try
             {
@@ -149,7 +149,7 @@ namespace ModManagerUI
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while refreshing versions: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while refreshing versions for {_currentMod.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 
@@ -166,7 +166,7 @@ namespace ModManagerUI
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while fetching logo: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while fetching logo from {mod.Logo.Thumb320x180}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 
@@ -223,7 +223,7 @@ namespace ModManagerUI
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while fetching image: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while fetching image from {image}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 

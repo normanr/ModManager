@@ -35,7 +35,7 @@ namespace ModManagerUI.UIComponents.ModCard
             }
             catch (HttpRequestException ex)
             {
-                Debug.LogWarning($"Error occurred while fetching image: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while fetching thumbnail from {_mod.Logo.Thumb320x180}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
     }
