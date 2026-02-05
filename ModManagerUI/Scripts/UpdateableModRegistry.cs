@@ -23,13 +23,13 @@ namespace ModManagerUI
         }
         
         [OnEvent]
-        public void OnModManagerPanelOpenedEvent(ModManagerPanelRefreshEvent modManagerPanelRefreshEvent)
+        public async Task OnModManagerPanelOpenedEvent(ModManagerPanelRefreshEvent modManagerPanelRefreshEvent)
         {
             try
             {
                 if (UpdateAvailable != null)
                     return;
-                Task.Run(IndexUpdatableMods);
+                await IndexUpdatableMods();
             }
             catch (OperationCanceledException ex)
             {

@@ -127,7 +127,7 @@ namespace ModManagerUI
             IEnumerable<File> versionList;
             try
             {
-                versionList = await ModIoModFilesRegistry.GetDescAsync(_currentMod.Id);
+                versionList = await ModIoModFilesRegistry.GetDesc(_currentMod.Id);
             }
             catch (Exception ex)
             {
@@ -240,7 +240,7 @@ namespace ModManagerUI
             List<string> dependencyNames = new();
             foreach (var dependency in dependencies)
             {
-                dependencyNames.Add(ModIoModRegistry.Get(dependency.ModId).Name!);
+                dependencyNames.Add((await ModIoModRegistry.Get(dependency.ModId)).Name!);
             }
 
             item.Q<Label>("Dependencies").text = dependencyNames.Any() ? string.Join(Environment.NewLine, dependencyNames) : "-";

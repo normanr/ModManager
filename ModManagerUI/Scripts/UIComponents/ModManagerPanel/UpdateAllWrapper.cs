@@ -73,7 +73,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
             {
                 try
                 {
-                    var mod = ModIoModRegistry.Get(updatableMod.Value.ModId);
+                    var mod = await ModIoModRegistry.Get(updatableMod.Value.ModId);
                     await InstallController.DownloadAndExtract(mod, updatableMod.Value);
                     _updateAvailableGetter().Remove(updatableMod.Key);
                 }

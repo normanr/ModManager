@@ -42,7 +42,7 @@ namespace ModManagerUI
                 if (dependency.IsInstalled())
                     continue;
                 var dependencyFile = await AddonService.TryGetCompatibleVersion(dependency.ModId, ModManagerPanel.CheckForHighestInsteadOfLive);
-                var dependencyMod = ModIoModRegistry.Get(dependency.ModId);
+                var dependencyMod = await ModIoModRegistry.Get(dependency.ModId);
                 await DownloadAndExtract(dependencyMod, dependencyFile);
             }
             var file = await AddonService.TryGetCompatibleVersion(mod.Id, ModManagerPanel.CheckForHighestInsteadOfLive);

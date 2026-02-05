@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Modio.Models;
 using Timberborn.Common;
@@ -7,16 +8,16 @@ namespace ModManager.ModIoSystem
 {
     public abstract class ModIoModRegistry
     {
-        private static readonly Dictionary<uint, Mod> ModCache = new();
+        private static readonly ConcurrentDictionary<uint, Lazy<Task<Mod>>> ModCache = new();
 
-        public static Mod Get(uint modId)
+        public static async Task<Mod> Get(uint modId)
         {
-            return ModCache.GetOrAdd(modId, () => Task.Run(() => RetrieveMod(modId)).Result);
+            return await ModCache.GetOrAdd(modId, () => new Lazy<Task<Mod>>(() => RetrieveMod(modId))).Value;
         }
         
-        public static Mod Get(Dependency dependency)
+        public static async Task<Mod> Get(Dependency dependency)
         {
-            return ModCache.GetOrAdd(dependency.ModId, () => Task.Run(() => RetrieveMod(dependency.ModId)).Result);
+            return await ModCache.GetOrAdd(dependency.ModId, () => new Lazy<Task<Mod>>(() => RetrieveMod(dependency.ModId))).Value;
         }
 
         private static async Task<Mod> RetrieveMod(uint modId)

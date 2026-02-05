@@ -75,13 +75,13 @@ namespace ModManager.AddonSystem
         {
             list.Add(mod);
             
-            var dependencies = ModIoModDependenciesRegistry.Get(mod);
+            var dependencies = await ModIoModDependenciesRegistry.Get(mod);
 
             foreach (var dependency in dependencies)
             {
                 yield return dependency;
                 
-                var dependencyMod = ModIoModRegistry.Get(dependency);
+                var dependencyMod = await ModIoModRegistry.Get(dependency);
                 if (list.Contains(dependencyMod))
                     continue;
                 
@@ -148,7 +148,7 @@ namespace ModManager.AddonSystem
         
         public async Task<File?> TryGetCompatibleVersion(uint modId, bool downloadHighestInsteadOfLive)
         {
-            var orderedFiles = await ModIoModFilesRegistry.GetDescAsync(modId);
+            var orderedFiles = await ModIoModFilesRegistry.GetDesc(modId);
             var latestCompatibleFile = orderedFiles.FirstOrDefault(file => VersionStatusService.GetVersionStatus(file) == VersionStatus.Compatible);
             if (latestCompatibleFile != null)
             {

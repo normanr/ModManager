@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using ModManager.AddonSystem;
 using ModManager.ModIoSystem;
 using ModManager.PersistenceSystem;
@@ -27,11 +28,11 @@ namespace ModManagerUI
             
             foreach (var mod in _modRepository.Mods)
             {
-                if (mod.Manifest.Id != ModHelper.ModManagerStringId) 
+                if (mod.Manifest.Id != ModHelper.ModManagerStringId || !mod.IsEnabled)
                     continue;
-                var modIoMod = ModIoModRegistry.Get(ModHelper.ModManagerUintId);
-                var modManagerManifest = new ModManagerManifest(mod.ModDirectory.Directory.FullName, modIoMod, mod.Manifest.Version.Numeric);
-                var modManifestPath = Path.Combine(mod.ModDirectory.Directory.FullName, ModManagerManifest.FileName);
+                var modIoMod = Task.Run(() => ModIoModRegistry.Get(ModHelper.ModManagerUintId)).Result;
+                var modManagerManifest = new ModManagerManifest(mod.ModDirectory.OriginPath, modIoMod, mod.Manifest.Version.Numeric);
+                var modManifestPath = Path.Combine(mod.ModDirectory.OriginPath, ModManagerManifest.FileName);
                 _persistenceService.SaveObject(modManagerManifest, modManifestPath);
                 InstalledAddonRepository.Instance.Add(modManagerManifest);
             }

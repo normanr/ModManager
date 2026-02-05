@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Modio.Models;
 using Timberborn.Common;
@@ -7,21 +9,21 @@ namespace ModManager.ModIoSystem
 {
     public abstract class ModIoModDependenciesRegistry
     {
-        private static readonly Dictionary<uint, IReadOnlyList<Dependency>> ModDependenciesCache = new();
+        private static readonly ConcurrentDictionary<uint, Lazy<Task<IReadOnlyList<Dependency>>>> ModDependenciesCache = new();
 
-        public static IReadOnlyList<Dependency> Get(uint modId)
+        public static async Task<IReadOnlyList<Dependency>> Get(uint modId)
         {
-            return ModDependenciesCache.GetOrAdd(modId, () => Task.Run(() => RetrieveMod(modId)).Result);
+            return await ModDependenciesCache.GetOrAdd(modId, () => new Lazy<Task<IReadOnlyList<Dependency>>>(() => RetrieveMod(modId))).Value;
         }
         
-        public static IReadOnlyList<Dependency> Get(Mod mod)
+        public static async Task<IReadOnlyList<Dependency>> Get(Mod mod)
         {
-            return ModDependenciesCache.GetOrAdd(mod.Id, () => Task.Run(() => RetrieveMod(mod.Id)).Result);
+            return await ModDependenciesCache.GetOrAdd(mod.Id, () => new Lazy<Task<IReadOnlyList<Dependency>>>(() => RetrieveMod(mod.Id))).Value;
         }
         
-        public static IReadOnlyList<Dependency> Get(Dependency dependency)
+        public static async Task<IReadOnlyList<Dependency>> Get(Dependency dependency)
         {
-            return ModDependenciesCache.GetOrAdd(dependency.ModId, () => Task.Run(() => RetrieveMod(dependency.ModId)).Result);
+            return await ModDependenciesCache.GetOrAdd(dependency.ModId, () => new Lazy<Task<IReadOnlyList<Dependency>>>(() => RetrieveMod(dependency.ModId))).Value;
         }
 
         private static async Task<IReadOnlyList<Dependency>> RetrieveMod(uint modId)
