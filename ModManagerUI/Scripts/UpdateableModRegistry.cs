@@ -23,7 +23,7 @@ namespace ModManagerUI
         }
         
         [OnEvent]
-        public async Task OnModManagerPanelOpenedEvent(ModManagerPanelRefreshEvent modManagerPanelRefreshEvent)
+        public async Task OnModManagerPanelRefreshEvent(ModManagerPanelRefreshEvent modManagerPanelRefreshEvent)
         {
             try
             {
@@ -54,8 +54,9 @@ namespace ModManagerUI
                 {
                     file = await AddonService.Instance!.TryGetCompatibleVersion(manifest.ResourceId, ModManagerPanel.CheckForHighestInsteadOfLive);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.LogWarning($"Error occurred while fetching compatible files for {manifest.ResourceId}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
                     continue;
                 }
 
