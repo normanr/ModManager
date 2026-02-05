@@ -15,35 +15,38 @@ namespace ModManager.ModSystem
 
         public IEnumerable<ModManagerManifest> Find()
         {
-            foreach (var enabledManifest in Directory.GetFiles(Paths.Mods, ModManagerManifest.FileName, SearchOption.AllDirectories))
+            foreach (var directory in Directory.GetDirectories(Paths.Mods, "*"))
             {
-                var manifest = LoadManifest(enabledManifest);
-                if (manifest == null)
-                { 
-                    continue; 
-                }
-                yield return manifest;
-
-            }
-
-            foreach (var disabledManifest in Directory.GetFiles(Paths.Mods, ModManagerManifest.FileName + Names.Extensions.Disabled, SearchOption.AllDirectories))
-            {
-                var manifest = LoadManifest(disabledManifest);
-                if (manifest == null)
+                foreach (var enabledManifest in Directory.GetFiles(directory, ModManagerManifest.FileName))
                 {
-                    continue;
-                }
-                yield return manifest;
-            }
+                    var manifest = LoadManifest(enabledManifest);
+                    if (manifest == null)
+                    { 
+                        continue; 
+                    }
+                    yield return manifest;
 
-            foreach (var enabledManifest in Directory.GetFiles(Paths.Mods, ModManagerManifest.FileName + Names.Extensions.Remove, SearchOption.AllDirectories))
-            {
-                var manifest = LoadManifest(enabledManifest);
-                if (manifest == null)
-                {
-                    continue;
                 }
-                yield return manifest;
+
+                foreach (var disabledManifest in Directory.GetFiles(directory, ModManagerManifest.FileName + Names.Extensions.Disabled))
+                {
+                    var manifest = LoadManifest(disabledManifest);
+                    if (manifest == null)
+                    {
+                        continue;
+                    }
+                    yield return manifest;
+                }
+
+                foreach (var enabledManifest in Directory.GetFiles(directory, ModManagerManifest.FileName + Names.Extensions.Remove))
+                {
+                    var manifest = LoadManifest(enabledManifest);
+                    if (manifest == null)
+                    {
+                        continue;
+                    }
+                    yield return manifest;
+                }
             }
         }
 
