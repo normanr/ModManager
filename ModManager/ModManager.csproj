@@ -68,6 +68,5 @@
 		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ModManagerPath)" />
 		<Copy SourceFiles="$(ProjectDir)\libs\Modio.dll" DestinationFolder="$(ModManagerPath)\libs" />
 		<Copy SourceFiles="$(ProjectDir)\libs\ProgressStream.dll" DestinationFolder="$(ModManagerPath)\libs" />
-        <Exec Command='"$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steam.exe" -applaunch 1062090'/>
 	</Target>
 </Project>

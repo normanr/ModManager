@@ -89,6 +89,9 @@
 		<Copy SourceFiles="@(AssetBundles)"  DestinationFolder="$(ModManagerPath)\AssetBundles" />
 		<Copy SourceFiles="@(Localizations)" DestinationFolder="$(ModManagerPath)\Localizations" />
 		<Copy SourceFiles="@(Sprites)" DestinationFolder="$(ModManagerPath)\Sprites" />
+	</Target>
+
+	<Target Name="RunTimberborn" AfterTargets="Build">
 		<Exec Command='"$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steam.exe" -applaunch 1062090'/>
 	</Target>
 </Project>
