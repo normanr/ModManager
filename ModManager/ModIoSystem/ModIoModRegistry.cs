@@ -12,12 +12,21 @@ namespace ModManager.ModIoSystem
 
         public static async Task<Mod> Get(uint modId)
         {
-            return await ModCache.GetOrAdd(modId, () => new Lazy<Task<Mod>>(() => RetrieveMod(modId))).Value;
+            var lazy = ModCache.GetOrAdd(modId, () => new Lazy<Task<Mod>>(() => RetrieveMod(modId)));
+            try
+            {
+                return await lazy.Value;
+            }
+            catch
+            {
+                ModCache.TryUpdate(modId, new Lazy<Task<Mod>>(() => RetrieveMod(modId)), lazy);
+                throw;
+            }
         }
         
         public static async Task<Mod> Get(Dependency dependency)
         {
-            return await ModCache.GetOrAdd(dependency.ModId, () => new Lazy<Task<Mod>>(() => RetrieveMod(dependency.ModId))).Value;
+            return await Get(dependency.ModId);
         }
 
         private static async Task<Mod> RetrieveMod(uint modId)

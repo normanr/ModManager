@@ -15,13 +15,21 @@ namespace ModManager.ModIoSystem
 
         public static async Task<IEnumerable<File>> Get(uint modId)
         {
-            return await ModIoModFiles.GetOrAdd(modId, () => new Lazy<Task<IEnumerable<File>>>(() => RetrieveFiles(modId))).Value;
+            var lazy = ModIoModFiles.GetOrAdd(modId, () => new Lazy<Task<IEnumerable<File>>>(() => RetrieveFiles(modId)));
+            try
+            {
+                return await lazy.Value;
+            }
+            catch
+            {
+                ModIoModFiles.TryUpdate(modId, new Lazy<Task<IEnumerable<File>>>(() => RetrieveFiles(modId)), lazy);
+                throw;
+            }
         }
 
         public static async Task<IEnumerable<File>> GetDesc(uint modId)
         {
-            var files = await ModIoModFiles.GetOrAdd(modId, () => new Lazy<Task<IEnumerable<File>>>(() => RetrieveFiles(modId))).Value;
-            return files.OrderByDescending(file => file.Id).ToList().AsReadOnly();
+            return (await Get(modId)).OrderByDescending(file => file.Id).ToList().AsReadOnly();
         }
 
         private static async Task<IEnumerable<File>> RetrieveFiles(uint modId)
