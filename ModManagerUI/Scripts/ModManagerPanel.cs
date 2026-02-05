@@ -50,6 +50,7 @@ namespace ModManagerUI
         private Label _error = null!;
         private TextField _search = null!;
         private TagsWrapper _tagsWrapper = null!;
+        private InstalledRadioButtonGroup _installedRadioButtonGroup = null!;
         private ShowMoreButton _showMoreButton = null!;
         private UpdateAllWrapper? _updateAll;
         
@@ -121,7 +122,8 @@ namespace ModManagerUI
             // new VersionStatusRadioButtonGroup(root.Q<RadioButtonGroup>("VersionStatusOptions"), versionStatusTagOption, this).Initialize();
             
             var installedTagOption = RadioButtonTagOption.Create(typeof(InstalledOptions));
-            new InstalledRadioButtonGroup(_root.Q<RadioButtonGroup>("Options"), installedTagOption).Initialize(true);
+            _installedRadioButtonGroup = new InstalledRadioButtonGroup(_root.Q<RadioButtonGroup>("Options"), installedTagOption);
+            _installedRadioButtonGroup.Initialize(true);
             
             var enabledTagOption = RadioButtonTagOption.Create(typeof(EnabledOptions));
             new EnabledRadioButtonGroup(_root.Q<RadioButtonGroup>("EnabledOptions"), enabledTagOption).Initialize(true);
@@ -228,6 +230,15 @@ namespace ModManagerUI
         public void OnModsBoxFullInfoClosedEvent(ModsBoxFullInfoClosedEvent modsBoxFullInfoClosedEvent)
         {
             _root.ToggleDisplayStyle(true);
+        }
+        
+        [OnEvent]
+        public void OnUpdatableModsRetrieved(UpdatableModsRetrievedEvent updatableModsRetrievedEvent)
+        {
+            if (!_installedRadioButtonGroup.TryGetActiveValue(out InstalledOptions installedOptions))
+                return;
+            if (installedOptions == InstalledOptions.UpdateAvailable)
+                Refresh();
         }
         
         [OnEvent]

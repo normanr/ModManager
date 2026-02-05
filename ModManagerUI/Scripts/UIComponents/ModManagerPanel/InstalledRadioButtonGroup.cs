@@ -13,10 +13,17 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         {
         }
 
+        public bool TryGetActiveValue(out InstalledOptions installedOptions)
+        {
+            installedOptions = default;
+            if (!HasTagSelected()) return false;
+            return Enum.TryParse(GetActiveTag(), out installedOptions);
+        }
+
         public List<uint> ProvideFilterIds(out bool isNotList)
         {
             isNotList = false;
-            if (!HasTagSelected() || !Enum.TryParse(GetActiveTag(), out InstalledOptions installedOptions))
+            if (!TryGetActiveValue(out InstalledOptions installedOptions))
                 return new List<uint>();
             switch (installedOptions)
             {
