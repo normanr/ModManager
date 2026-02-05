@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Modio.Models;
-using ModManager.ModIoSystem;
 using Timberborn.Common;
 
 namespace ModManager.VersionSystem
@@ -17,18 +16,6 @@ namespace ModManager.VersionSystem
             var version = file.Version;
             if (string.IsNullOrEmpty(version))
                 return VersionStatus.Unknown;
-            return VersionStatusCache.GetOrAdd(file.Id, () => FindVersionStatus(file));
-        }
-        
-        public static VersionStatus GetVersionStatus(uint modId, string? version)
-        {
-            if (string.IsNullOrEmpty(version))
-                return VersionStatus.Unknown;
-            var file = ModIoModFilesRegistry.Get(modId).FirstOrDefault(file => file.Version == version);
-            if (file == null)
-                return VersionStatus.Unknown;
-            if (VersionStatusCache.TryGetValue(file.Id, out var versionStatus))
-                return versionStatus;
             return VersionStatusCache.GetOrAdd(file.Id, () => FindVersionStatus(file));
         }
         

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Modio.Models;
 using ModManager.VersionSystem;
+using Timberborn.Common;
 using Timberborn.DropdownSystem;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
     {
         private readonly ModFullInfoController _infoController;
         private readonly List<File> _versions;
+        private readonly Dictionary<uint, File> _versionsById;
         
         public VersionDropdownProvider(
             ModFullInfoController infoController,
@@ -19,30 +21,33 @@ namespace ModManagerUI.UIComponents.ModFullInfo
         {
             _infoController = infoController;
             _versions = versions;
+            _versionsById = versions.ToDictionary(x => x.Id);
         }
 
-        public IReadOnlyList<string> Items => _versions.Select(x => x.Version ?? "").ToList();
+        public IReadOnlyList<string> Items => _versions.Select(x => x.Id + ":" + x.Version ?? "").ToList();
 
         public string GetValue()
         {
-            return _infoController.CurrentFile!.Version ?? "";
+            return _infoController.CurrentFile!.Id + ":" + _infoController.CurrentFile!.Version ?? "";
         }
 
         public void SetValue(string value)
         {
-            var currFile = _versions.SingleOrDefault(x => (x.Version ?? "") == value);
+            uint.TryParse(value.Split(":", 2)[0], out var id);
+            var currFile = _versionsById.GetOrDefault(id);
             _infoController.CurrentFile = currFile;
             _infoController.Refresh();
         }
 
         public string FormatDisplayText(string value)
         {
-            return value;
+            return value.Split(":", 2)[1];
         }
 
         public Sprite GetIcon(string value)
         {
-            var versionStatus = VersionStatusService.GetVersionStatus(_infoController.CurrentFile!.ModId, value);
+            uint.TryParse(value.Split(":", 2)[0], out var id);
+            var versionStatus = VersionStatusService.GetVersionStatus(_versionsById.GetOrDefault(id));
             switch (versionStatus)
             {
                 case VersionStatus.Unknown:
