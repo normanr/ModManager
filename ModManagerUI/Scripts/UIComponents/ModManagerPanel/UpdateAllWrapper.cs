@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ModManager.AddonSystem;
-using ModManager.MapSystem;
 using ModManager.ModIoSystem;
 using ModManagerUI.EventSystem;
 using Timberborn.CoreUI;
@@ -69,12 +66,18 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
         {
             _updateAllButton.SetEnabled(false);
             ModManagerUI.ModManagerPanel.ModsWereChanged = true;
+            // TODO: Change _downloadButton texts to Queued and support cancelling all updates
             foreach (var updatableMod in _updateAvailableGetter().ToArray())
             {
+                var context = $"id:{updatableMod.Value.ModId}";
                 try
                 {
                     var mod = await ModIoModRegistry.Get(updatableMod.Value.ModId);
-                    await InstallController.DownloadAndExtract(mod, updatableMod.Value);
+                    context = mod.Name;
+                    if (!await InstallController.DownloadAndExtract(mod, updatableMod.Value))
+                    {
+                        break;
+                    }
                     _updateAvailableGetter().Remove(updatableMod.Key);
                 }
                 catch (Exception ex)

@@ -11,6 +11,7 @@ using File = Modio.Models.File;
 using Mod = Modio.Models.Mod;
 using Mono.Security.Cryptography;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace ModManager.AddonSystem
 {
@@ -92,7 +93,7 @@ namespace ModManager.AddonSystem
             }
         }
 
-        public async Task<(string location, Mod Mod)> Download(Mod mod, Action<float> progress)
+        public async Task<(string location, Mod Mod)> Download(Mod mod, CancellationToken cancellationToken, Action<float> progress)
         {
             if (mod.IsInstalled())
             {
@@ -106,6 +107,7 @@ namespace ModManager.AddonSystem
                 }
             }
 
+            progress(0);
             Directory.CreateDirectory($"{Paths.ModManager.Temp}");
             var tempZipLocation = Path.Combine(Paths.ModManager.Temp, $"{mod.Id}_{mod.Modfile!.Version}.zip");
 
@@ -122,7 +124,7 @@ namespace ModManager.AddonSystem
             using var cstream = new CryptoStream(stream, md5sum, CryptoStreamMode.Write);
             using var pstream = new ProgressStream.ProgressStream(cstream, writeProgress: streamProgress);
 
-            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, pstream);
+            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, pstream, cancellationToken);
             cstream.FlushFinalBlock();
 
             var wantMd5 = CryptoConvert.FromHex(mod.Modfile!.FileHash!.Md5);

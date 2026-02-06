@@ -28,11 +28,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
         {
             var downloadButton = new DownloadButton(root, mod, modFullInfoController);
             EventBus.Instance.Register(downloadButton);
-            root.clicked += () =>
-            {
-                root.SetEnabled(false);
-                downloadButton.Download();
-            };
+            root.clicked += downloadButton.Download;
             downloadButton.Refresh();
             return downloadButton;
         }

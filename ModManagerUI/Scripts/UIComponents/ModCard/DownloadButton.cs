@@ -44,16 +44,6 @@ namespace ModManagerUI.UIComponents.ModCard
             }
         }
 
-        public void Enable()
-        {
-            _root.SetEnabled(true);
-        }
-        
-        public void Disable()
-        {
-            _root.SetEnabled(false);
-        }
-
         public void Refresh()
         {
             _root.text = TextGetter();
@@ -76,7 +66,6 @@ namespace ModManagerUI.UIComponents.ModCard
 
         private async void OnClick()
         {
-            Disable();
             try
             {
                 await InstallController.DownloadAndExtractWithDependencies(_mod);

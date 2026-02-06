@@ -78,12 +78,10 @@ namespace ModManagerUI
         public void ModActionStarted()
         {
             ModManagerPanel.ModsWereChanged = true;
-            _downloadButton.Disable();
         }
 
         public void ModActionStopped()
         {
-            _downloadButton.Enable();
             Refresh();
         }
         
