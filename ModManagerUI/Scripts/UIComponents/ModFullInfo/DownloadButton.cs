@@ -45,7 +45,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Error occurred while installing mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogError($"Error occurred while installing {_mod?.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
             await UpdateableModRegistry.IndexUpdatableMods();
             _modFullInfoController.Refresh();

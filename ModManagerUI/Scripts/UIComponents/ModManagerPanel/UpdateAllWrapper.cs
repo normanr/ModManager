@@ -79,7 +79,7 @@ namespace ModManagerUI.UIComponents.ModManagerPanel
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Error occurred while installing mod: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                    Debug.LogError($"Error occurred while updating {context}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
                 }
             }
             
