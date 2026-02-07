@@ -119,17 +119,25 @@ namespace ModManager.AddonSystem
                 progress((float)position / length);
             });
 
-            using var stream = new FileInfo(tempZipLocation).Create();
-            using var md5sum = MD5.Create();
-            using var cstream = new CryptoStream(stream, md5sum, CryptoStreamMode.Write);
-            using var pstream = new ProgressStream.ProgressStream(cstream, writeProgress: streamProgress);
+            try
+            {
+                using var stream = new FileInfo(tempZipLocation).Create();
+                using var md5sum = MD5.Create();
+                using var cstream = new CryptoStream(stream, md5sum, CryptoStreamMode.Write);
+                using var pstream = new ProgressStream.ProgressStream(cstream, writeProgress: streamProgress);
 
-            await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, pstream, cancellationToken);
-            cstream.FlushFinalBlock();
+                await ModIo.Client.Download(ModIoGameInfo.GameId, mod.Id, mod.Modfile!.Id, pstream, cancellationToken);
+                cstream.FlushFinalBlock();
 
-            var wantMd5 = CryptoConvert.FromHex(mod.Modfile!.FileHash!.Md5);
-            if (!CryptographicOperations.FixedTimeEquals(wantMd5, md5sum.Hash)) {
-                throw new AddonException($"Mod {mod.Name} download hash mismatch for version {mod.Modfile!.Version}.");
+                var wantMd5 = CryptoConvert.FromHex(mod.Modfile!.FileHash!.Md5);
+                if (!CryptographicOperations.FixedTimeEquals(wantMd5, md5sum.Hash)) {
+                    throw new AddonException($"Mod {mod.Name} download hash mismatch for version {mod.Modfile!.Version}.");
+                }
+            }
+            catch
+            {
+                System.IO.File.Delete(tempZipLocation);
+                throw;
             }
 
             return tempZipLocation;
