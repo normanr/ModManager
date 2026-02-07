@@ -31,27 +31,27 @@ namespace ModManager.AddonSystem
             _addonInstallerService = addonInstallerService;
         }
 
-        public void Install(Mod mod, string zipLocation)
+        public async Task Install(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (mod.IsInstalled())
             {
                 throw new AddonException($"{mod.Name} is already installed. Use method `{nameof(ChangeVersion)}` to change the version of an installed mod.");
             }
 
-            _addonInstallerService.Install(mod, zipLocation);
+            await _addonInstallerService.Install(mod, zipLocation, cancellationToken, progress);
         }
 
-        public void Uninstall(uint modId)
+        public async Task Uninstall(uint modId)
         {
             if (!_installedAddonRepository.TryGet(modId, out var manifest))
             {
                 throw new AddonException($"Cannot uninstall modId: {modId}. Mod is not installed.");
             }
 
-            _addonInstallerService.Uninstall(manifest);
+            await _addonInstallerService.Uninstall(manifest);
         }
 
-        public void ChangeVersion(Mod mod, string zipLocation)
+        public async Task ChangeVersion(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (!mod.IsInstalled())
             {
@@ -62,7 +62,7 @@ namespace ModManager.AddonSystem
                 throw new AddonException($"{mod.Name} is already installed with version {mod.Modfile!.Version}.");
             }
 
-            _addonInstallerService.ChangeVersion(mod, zipLocation);
+            await _addonInstallerService.ChangeVersion(mod, zipLocation, cancellationToken, progress);
         }
         
         public IAsyncEnumerable<Dependency> GetDependencies(Mod mod)

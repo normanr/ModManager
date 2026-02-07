@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using ModManager.AddonSystem;
 using Timberborn.Modding;
 using Mod = Modio.Models.Mod;
@@ -17,11 +20,11 @@ namespace ModManager.AddonInstallerSystem
             _addonInstallers = addonInstallers;
         }
 
-        public void Install(Mod mod, string zipLocation)
+        public async Task Install(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             foreach (var installer in _addonInstallers)
             {
-                if (installer.Install(mod, zipLocation))
+                if (await installer.Install(mod, zipLocation, cancellationToken, progress))
                 {
                     _modRepository.Load();
                     
@@ -32,11 +35,11 @@ namespace ModManager.AddonInstallerSystem
             throw new AddonInstallerException($"{mod.Name} could not be installed by any installer");
         }
 
-        public void Uninstall(ModManagerManifest modManagerManifest)
+        public async Task Uninstall(ModManagerManifest modManagerManifest)
         {
             foreach (var installer in _addonInstallers)
             {
-                if (installer.Uninstall(modManagerManifest))
+                if (await installer.Uninstall(modManagerManifest))
                 {
                     _modRepository.Load();
                     
@@ -47,11 +50,11 @@ namespace ModManager.AddonInstallerSystem
             throw new AddonInstallerException($"{modManagerManifest.ModName} could not be uninstalled by any installer");
         }
 
-        public void ChangeVersion(Mod mod, string zipLocation)
+        public async Task ChangeVersion(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             foreach (var installer in _addonInstallers)
             {
-                if (installer.ChangeVersion(mod, zipLocation))
+                if (await installer.ChangeVersion(mod, zipLocation, cancellationToken, progress))
                 {
                     _modRepository.Load();
                     

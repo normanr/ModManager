@@ -1,12 +1,14 @@
-﻿using Modio.Models;
-using ModManager.ExtractorSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Modio.Models;
 using ModManager.AddonSystem;
-using File = System.IO.File;
+using ModManager.ExtractorSystem;
 
 namespace ModManager.ModSystem
 {
@@ -14,19 +16,18 @@ namespace ModManager.ModSystem
     {
         private List<string> _foldersToIgnore = new() { "configs" };
 
-        public bool Extract(string addonZipLocation, Mod modInfo, out string extractLocation, bool overWrite = true)
+        public async Task<string?> Extract(string addonZipLocation, Mod modInfo, CancellationToken cancellationToken, Action<float> progress)
         {
-            extractLocation = "";
             if (!modInfo.Tags.Any(x => x.Name == "Mod"))
-                return false;
+                return null;
 
             var modFolderName = $"{modInfo.NameId}_{modInfo.Id}_{modInfo.Modfile?.Version}";
             ClearOldModFiles(modInfo, modFolderName);
-            extractLocation = Path.Combine(Paths.Mods, modFolderName);
+            var extractLocation = Path.Combine(Paths.Mods, modFolderName);
             if (!Directory.Exists(extractLocation))
                 Directory.CreateDirectory(extractLocation);
-            ExtractZipWithoutCommonRoot(addonZipLocation, extractLocation);
-            return true;
+            await ExtractZipWithoutCommonRoot(addonZipLocation, extractLocation, cancellationToken, progress);
+            return extractLocation;
         }
 
         private void ClearOldModFiles(Mod modInfo, string modFolderName)
@@ -110,7 +111,7 @@ namespace ModManager.ModSystem
             }
         }
 
-        private static void ExtractZipWithoutCommonRoot(string zipFilePath, string extractPath)
+        private static async Task ExtractZipWithoutCommonRoot(string zipFilePath, string extractPath, CancellationToken cancellationToken, Action<float> progress)
         {
             using var archive = ZipFile.OpenRead(zipFilePath);
             
@@ -121,7 +122,9 @@ namespace ModManager.ModSystem
 
             var commonRoot = GetCommonRoot(allPaths);
 
-            foreach (var entry in archive.Entries)
+            var timer = Stopwatch.StartNew();
+            progress(0);
+            foreach (var (i, entry) in archive.Entries.Select((e, i) => (i, e)))
             {
                 if (string.IsNullOrEmpty(entry.Name))
                     continue;
@@ -134,7 +137,15 @@ namespace ModManager.ModSystem
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
 
+                // TODO: Maybe backport ExtractToFileAsync?
                 entry.ExtractToFile(destinationFilePath, overwrite: true);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (timer.ElapsedMilliseconds > 33)
+                {
+                    progress((float)i / archive.Entries.Count());
+                    await Task.Yield();
+                    timer.Restart();
+                }
             }
         }
 

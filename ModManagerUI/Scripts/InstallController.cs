@@ -41,7 +41,11 @@ namespace ModManagerUI
                     EventBus.Instance.PostEvent(new ModDownloadProgressEvent(mod.Id, progress));
                 });
                 try {
-                    TryInstall(mod, downloadedFile);
+                    await TryInstall(mod, downloadedFile, source.Token, (progress) =>
+                    {
+                        // TODO Add ProgressType Enum
+                        EventBus.Instance.PostEvent(new ModDownloadProgressEvent(mod.Id, progress));
+                    });
                 }
                 finally
                 {
@@ -89,14 +93,14 @@ namespace ModManagerUI
             await DownloadAndExtract(mod, file);
         }
         
-        public static void Uninstall(Mod mod)
+        public static async Task Uninstall(Mod mod)
         {
             var modCard = ModCardRegistry.Get(mod);
             modCard?.ModActionStarted();
             
             try
             {
-                AddonService!.Uninstall(mod.Id);
+                await AddonService!.Uninstall(mod.Id);
             }
             finally
             {
@@ -104,15 +108,15 @@ namespace ModManagerUI
             }
         }
         
-        private static void TryInstall(Mod mod, string zipLocation)
+        private static async Task TryInstall(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (InstalledAddonRepository.Instance.TryGet(mod.Id, out var manifest) && manifest.Version != mod.Modfile!.Version)
             {
-                AddonService!.ChangeVersion(mod, zipLocation);
+                await AddonService!.ChangeVersion(mod, zipLocation, cancellationToken, progress);
             }
             else
             {
-                AddonService!.Install(mod, zipLocation);
+                await AddonService!.Install(mod, zipLocation, cancellationToken, progress);
             }
         }
     }

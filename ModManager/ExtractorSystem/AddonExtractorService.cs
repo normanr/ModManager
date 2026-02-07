@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Modio.Models;
 
 namespace ModManager.ExtractorSystem
@@ -12,11 +15,12 @@ namespace ModManager.ExtractorSystem
             _addonInstallers = addonInstallers;
         }
 
-        public string Extract(Mod addonInfo, string addonZipLocation, bool overwrite = true)
+        public async Task<string> Extract(Mod addonInfo, string addonZipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             foreach (var extractor in _addonInstallers)
             {
-                if (extractor.Extract(addonZipLocation, addonInfo, out var extractLocation))
+                var extractLocation = await extractor.Extract(addonZipLocation, addonInfo, cancellationToken, progress);
+                if (!string.IsNullOrEmpty(extractLocation))
                 {
                     return extractLocation;
                 }

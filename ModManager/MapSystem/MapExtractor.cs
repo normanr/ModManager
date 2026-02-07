@@ -1,19 +1,22 @@
-﻿using Modio.Models;
-using ModManager.ExtractorSystem;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Modio.Models;
+using ModManager.ExtractorSystem;
 
 namespace ModManager.MapSystem
 {
     public class MapExtractor : IAddonExtractor
     {
-        public bool Extract(string addonZipLocation, Mod modInfo, out string extractLocation, bool overWrite = true)
+        public async Task<string?> Extract(string addonZipLocation, Mod modInfo, CancellationToken cancellationToken, Action<float> progress)
         {
-            extractLocation = "";
             if (!modInfo.Tags.Any(x => x.Name == "Map"))
             {
-                return false;
+                return null;
             }
 
             using (var zipFile = ZipFile.OpenRead(addonZipLocation))
@@ -27,7 +30,9 @@ namespace ModManager.MapSystem
                     throw new MapException("Map zip does not contain an entry for a .timber file");
                 }
 
-                foreach (var timberFile in timberFiles)
+                var timer = Stopwatch.StartNew();
+                progress(0);
+                foreach (var (i, timberFile) in timberFiles.Select((f, i) => (i, f)))
                 {
                     var filename = timberFile.Name.Replace(Names.Extensions.TimberbornMap, "");
                     var files = Directory.GetFiles(Paths.Maps, filename);
@@ -36,13 +41,19 @@ namespace ModManager.MapSystem
                         filename += $"_{files.Length + 1}";
                     }
 
-                    timberFile.ExtractToFile(Path.Combine(Paths.Maps, timberFile.Name), overWrite);
+                    // TODO: Maybe backport ExtractToFileAsync?
+                    timberFile.ExtractToFile(Path.Combine(Paths.Maps, timberFile.Name), overwrite: true);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (timer.ElapsedMilliseconds > 33)
+                    {
+                        progress((float)i / timberFiles.Count());
+                        await Task.Yield();
+                        timer.Restart();
+                    }
                 }
             }
 
-            extractLocation = Paths.Maps;
-
-            return true;
+            return Paths.Maps;
         }
     }
 }

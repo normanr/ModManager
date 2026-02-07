@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ModManager.AddonInstallerSystem;
 using ModManager.AddonSystem;
 using ModManager.ExtractorSystem;
@@ -24,11 +26,11 @@ namespace ModManager.ModSystem
             _addonExtractorService = addonExtractorService;
         }
 
-        public bool Install(Mod mod, string zipLocation)
+        public async Task<bool> Install(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (!mod.Tags.Any(x => x.Name == "Mod"))
                 return false;
-            var installLocation = _addonExtractorService.Extract(mod, zipLocation);
+            var installLocation = await _addonExtractorService.Extract(mod, zipLocation, cancellationToken, progress);
             var manifest = new ModManagerManifest(installLocation, mod);
             var modManifestPath = Path.Combine(installLocation, ModManagerManifest.FileName);
             _persistenceService.SaveObject(manifest, modManifestPath);
@@ -36,7 +38,7 @@ namespace ModManager.ModSystem
             return true;
         }
 
-        public bool Uninstall(ModManagerManifest modManagerManifest)
+        public async Task<bool> Uninstall(ModManagerManifest modManagerManifest)
         {
             if (modManagerManifest is not ModManagerManifest && modManagerManifest is MapModManagerManifest)
                 return false;
@@ -55,12 +57,12 @@ namespace ModManager.ModSystem
             return true;
         }
 
-        public bool ChangeVersion(Mod mod, string zipLocation)
+        public async Task<bool> ChangeVersion(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (!mod.Tags.Any(x => x.Name == "Mod"))
                 return false;
             var playerPrefs = PlayerPrefsHelper.GetPlayerPrefs(mod.Id);
-            var installLocation = _addonExtractorService.Extract(mod, zipLocation);
+            var installLocation = await _addonExtractorService.Extract(mod, zipLocation, cancellationToken, progress);
             var manifest = new ModManagerManifest(installLocation, mod);
             var modManifestPath = Path.Combine(installLocation, ModManagerManifest.FileName);
             _persistenceService.SaveObject(manifest, modManifestPath);

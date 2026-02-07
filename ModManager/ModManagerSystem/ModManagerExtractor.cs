@@ -6,6 +6,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using ModManager.StartupSystem;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ModManager.ModManagerSystem
 {
@@ -20,18 +22,17 @@ namespace ModManager.ModManagerSystem
             _modManagerFolderPath = startupOptions.ModManagerPath;
         }
         
-        public bool Extract(string addonZipLocation, Mod modInfo, out string extractLocation, bool overWrite = true)
+        public async Task<string?> Extract(string addonZipLocation, Mod modInfo, CancellationToken cancellationToken, Action<float> progress)
         {
-            extractLocation = "";
             if (modInfo.Name != _modManagerPackageName)
             {
-                return false;
+                return null;
             }
             ClearOldModFiles(_modManagerFolderPath!);
-            extractLocation = _modManagerFolderPath!;
-            ZipFile.ExtractToDirectory(addonZipLocation, Paths.Mods, overWrite);
+            // TODO: Maybe backport ExtractToDirectoryAsync?
+            ZipFile.ExtractToDirectory(addonZipLocation, Paths.Mods, overwriteFiles: true);
 
-            return true;
+            return _modManagerFolderPath;
         }
         
         private void ClearOldModFiles(string modFolderName)

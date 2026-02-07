@@ -2,10 +2,13 @@
 using ModManager.AddonSystem;
 using ModManager.ExtractorSystem;
 using ModManager.PersistenceSystem;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Timberborn.Modding;
 using File = Modio.Models.File;
 using Mod = Modio.Models.Mod;
@@ -26,7 +29,7 @@ namespace ModManager.MapSystem
             _addonExtractorService = addonExtractorService;
         }
 
-        public bool Install(Mod mod, string zipLocation)
+        public async Task<bool> Install(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (!mod.Tags.Any(x => x.Name == "Map"))
             {
@@ -51,7 +54,7 @@ namespace ModManager.MapSystem
                 }
             }
 
-            var installLocation = _addonExtractorService.Extract(mod, zipLocation);
+            var installLocation = await _addonExtractorService.Extract(mod, zipLocation, cancellationToken, progress);
             
             var manifest = new MapModManagerManifest(installLocation, mod, timberFileNames);
             var manifests = _mapManifestFinder.Find()
@@ -66,7 +69,7 @@ namespace ModManager.MapSystem
             return true;
         }
 
-        public bool Uninstall(ModManagerManifest modManagerManifest)
+        public async Task<bool> Uninstall(ModManagerManifest modManagerManifest)
         {
             if (modManagerManifest is not MapModManagerManifest)
             {
@@ -92,7 +95,7 @@ namespace ModManager.MapSystem
             return true;
         }
 
-        public bool ChangeVersion(Mod mod, string zipLocation)
+        public async Task<bool> ChangeVersion(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress)
         {
             if (!mod.Tags.Any(x => x.Name == "Map"))
             {
@@ -117,7 +120,7 @@ namespace ModManager.MapSystem
                 }
             }
 
-            var installLocation = _addonExtractorService.Extract(mod, zipLocation);
+            var installLocation = await _addonExtractorService.Extract(mod, zipLocation, cancellationToken, progress);
          
             var manifest = new MapModManagerManifest(installLocation, mod, timberFileNames);
             var manifests = _mapManifestFinder.Find()

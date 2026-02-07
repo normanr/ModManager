@@ -1,14 +1,17 @@
-﻿using Modio.Models;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Modio.Models;
 using ModManager.AddonSystem;
 
 namespace ModManager.AddonInstallerSystem
 {
     public interface IAddonInstaller
     {
-        public bool Install(Mod mod, string zipLocation);
+        public Task<bool> Install(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress);
 
-        public bool Uninstall(ModManagerManifest modManagerManifest);
+        public Task<bool> Uninstall(ModManagerManifest modManagerManifest);
 
-        public bool ChangeVersion(Mod mod, string zipLocation);
+        public Task<bool> ChangeVersion(Mod mod, string zipLocation, CancellationToken cancellationToken, Action<float> progress);
     }
 }

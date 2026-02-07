@@ -32,7 +32,7 @@ namespace ModManagerUI.UIComponents.ModCard
         {
             try
             {
-                InstallController.Uninstall(_mod);
+                await InstallController.Uninstall(_mod);
             }
             catch (Exception ex)
             {
