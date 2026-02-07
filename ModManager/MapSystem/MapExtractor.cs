@@ -41,7 +41,6 @@ namespace ModManager.MapSystem
             }
 
             extractLocation = Paths.Maps;
-            System.IO.File.Delete(addonZipLocation);
 
             return true;
         }

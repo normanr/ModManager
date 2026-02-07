@@ -36,11 +36,17 @@ namespace ModManagerUI
                     mod = JsonSerializer.Deserialize<Mod>(JsonSerializer.Serialize(mod))!;
                     mod.Modfile = file;
                 }
-                var downloadedMod = await AddonService!.Download(mod, source.Token, (progress) =>
+                var downloadedFile = await AddonService!.Download(mod, source.Token, (progress) =>
                 {
                     EventBus.Instance.PostEvent(new ModDownloadProgressEvent(mod.Id, progress));
                 });
-                TryInstall(downloadedMod);
+                try {
+                    TryInstall(mod, downloadedFile);
+                }
+                finally
+                {
+                    System.IO.File.Delete(downloadedFile);
+                }
                 return true;
             }
             catch (Exception)
@@ -98,15 +104,15 @@ namespace ModManagerUI
             }
         }
         
-        private static void TryInstall((string location, Mod Mod) mod)
+        private static void TryInstall(Mod mod, string zipLocation)
         {
-            if (InstalledAddonRepository.Instance.TryGet(mod.Mod.Id, out var manifest) && manifest.Version != mod.Mod.Modfile!.Version)
+            if (InstalledAddonRepository.Instance.TryGet(mod.Id, out var manifest) && manifest.Version != mod.Modfile!.Version)
             {
-                AddonService!.ChangeVersion(mod.Mod, mod.location);
+                AddonService!.ChangeVersion(mod, zipLocation);
             }
             else
             {
-                AddonService!.Install(mod.Mod, mod.location);
+                AddonService!.Install(mod, zipLocation);
             }
         }
     }

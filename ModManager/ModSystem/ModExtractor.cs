@@ -26,7 +26,6 @@ namespace ModManager.ModSystem
             if (!Directory.Exists(extractLocation))
                 Directory.CreateDirectory(extractLocation);
             ExtractZipWithoutCommonRoot(addonZipLocation, extractLocation);
-            File.Delete(addonZipLocation);
             return true;
         }
 

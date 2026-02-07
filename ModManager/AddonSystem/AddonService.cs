@@ -93,7 +93,7 @@ namespace ModManager.AddonSystem
             }
         }
 
-        public async Task<(string location, Mod Mod)> Download(Mod mod, CancellationToken cancellationToken, Action<float> progress)
+        public async Task<string> Download(Mod mod, CancellationToken cancellationToken, Action<float> progress)
         {
             if (mod.IsInstalled())
             {
@@ -132,8 +132,7 @@ namespace ModManager.AddonSystem
                 throw new AddonException($"Mod {mod.Name} download hash mismatch for version {mod.Modfile!.Version}.");
             }
 
-            (string, Mod) result = new(tempZipLocation, mod);
-            return result;
+            return tempZipLocation;
         }
 
         public async Task<byte[]> GetImage(Uri uri)

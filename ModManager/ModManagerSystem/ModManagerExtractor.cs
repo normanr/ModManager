@@ -30,7 +30,6 @@ namespace ModManager.ModManagerSystem
             ClearOldModFiles(_modManagerFolderPath!);
             extractLocation = _modManagerFolderPath!;
             ZipFile.ExtractToDirectory(addonZipLocation, Paths.Mods, overWrite);
-            System.IO.File.Delete(addonZipLocation);
 
             return true;
         }
