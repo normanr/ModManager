@@ -160,6 +160,10 @@ namespace ModManager.ModSystem
             for (var i = 0; i < minLength; i++)
             {
                 var segment = splitPaths[0][i];
+                if (segment.StartsWith("version-", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    break;
+                }
                 if (splitPaths.All(p => p[i] == segment))
                 {
                     commonRoot = commonRoot == "" ? segment : $"{commonRoot}/{segment}";
