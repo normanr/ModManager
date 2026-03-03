@@ -1,8 +1,8 @@
 {
   "Name": "Mod Manager",
-  "Version": "3.0.8",
+  "Version": "3.0.9",
   "Id": "ModManager",
-  "MinimumGameVersion": "1.0.6.0",
+  "MinimumGameVersion": "1.0.11.0",
   "Description": "Please do not upload. If you are reading this, it is an unauthorized version of the mod.",
   "RequiredMods": []
 }

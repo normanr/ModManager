@@ -74,7 +74,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<ModManagerPath>$(USERPROFILE)\Documents\Timberborn\Mods\$(SolutionName)\version-1.0.6</ModManagerPath>
+		<ModManagerPath>$(USERPROFILE)\Documents\Timberborn\Mods\$(SolutionName)\version-1.0.11</ModManagerPath>
 		<TimberbornPath>$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steamapps\common\Timberborn\</TimberbornPath>
 	</PropertyGroup>
 

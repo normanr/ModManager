@@ -145,11 +145,11 @@ namespace ModManagerUI
             }
             try
             {
-                _versionsDropdown?.RefreshContent();
+                _versionsDropdown?.UpdateSelectedValue();
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error occurred while refreshing versions for {_currentMod.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
+                Debug.LogWarning($"Error occurred while updating selected value for {_currentMod.Name}: {ex.ToString().Replace(".\r\n\x00", "").Replace("\x00", "")}");
             }
         }
 

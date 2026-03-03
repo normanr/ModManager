@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Modio.Models;
 using ModManager.VersionSystem;
@@ -39,7 +40,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
             _infoController.Refresh();
         }
 
-        public string FormatDisplayText(string value)
+        public string FormatDisplayText(string value, bool selected)
         {
             return value.Split(":", 2)[1];
         }
@@ -60,5 +61,7 @@ namespace ModManagerUI.UIComponents.ModFullInfo
                     throw new ArgumentOutOfRangeException(versionStatus.ToString());
             }
         }
+
+        public ImmutableArray<string> GetItemClasses(string value) => ImmutableArray<string>.Empty;
     }
 }
