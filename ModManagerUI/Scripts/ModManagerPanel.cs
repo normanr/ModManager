@@ -178,7 +178,7 @@ namespace ModManagerUI
         private void UpdateBehaviourToggleChanged(ChangeEvent<bool> changeEvent)
         {
             CheckForHighestInsteadOfLive = changeEvent.newValue;
-            EventBus.Instance.PostEvent(new ModManagerPanelRefreshEvent());
+            EventBus.Instance.PostEvent(new ModManagerPanelRefreshEvent(true));
         }
 
         private void OpenOptionsPanel()

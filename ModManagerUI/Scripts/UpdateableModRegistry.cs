@@ -27,7 +27,7 @@ namespace ModManagerUI
         {
             try
             {
-                if (UpdateAvailable != null)
+                if (UpdateAvailable != null && !modManagerPanelRefreshEvent.Force)
                     return;
                 await IndexUpdatableMods();
             }
