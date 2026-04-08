@@ -39,6 +39,9 @@ namespace ModManager.VersionSystem
         
         public static bool IsSameVersion(string? version1, string? version2)
         {
+            if (version1 == null && version2 == null)
+                return true;
+
             if (version1 == null || version2 == null)
                 return false;
             
